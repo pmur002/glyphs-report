@@ -231,7 +231,7 @@ text(mtcars$disp[30] + 2 + strwidth("Ferrari", font=4),
     on what users are able to
     express with R code, the <em>graphics device interface</em> also limits
     what graphics device authors are able to provide.
-    For example, the PDF language (CITE) is perfectly capable
+    For example, the PDF language (<a href="#PDF"/>) is perfectly capable
     of changing the colour and font of a word mid-sentence or
     even mid-word, but the <code>pdf()</code> graphics device cannot offer
     that level of detail because the R graphics engine will
@@ -255,7 +255,8 @@ text(mtcars$disp[30] + 2 + strwidth("Ferrari", font=4),
         a font "face", where the choice is restricted to "plain", "bold",
         "italic", and "bold italic".  
         We are unable to specify a numeric font "weight"
-        (for example, CSS (CITE) allows font weights from 100 to 900).
+        (for example, CSS 
+        allows font weights from 100 to 900; <a href="#CSS"/>).
       </p>
       <p>
         More generally, we are unable to select font variations 
@@ -326,7 +327,9 @@ text(mtcars$disp[30] + 2 + strwidth("Ferrari", font=4),
         Because the styling can change from word to word or even within a
         word, this typically requires some sort of markup where the
         styling is intermingled with the text, such as 
-        LaTeX, HTML/CSS and, to a lesser extent, markdown (CITE CITE CITE).
+        LaTeX (<a href="lamport86latex"/>), 
+        HTML (<a href="HTML"/>) and, 
+        to a lesser extent, markdown (<a href="#markdown"/>).
         For example, the following code snippets demonstrate marked up
         text for both LaTeX and HTML/CSS where one word is red and 
         the other is black (by default).
@@ -348,7 +351,9 @@ text(mtcars$disp[30] + 2 + strwidth("Ferrari", font=4),
         <strong>Typesetting glyphs:</strong>  
         Given a set of rich text, we need to be able to
         determine <em>which glyphs to use</em> and <em>where to draw them</em>.
-        This can become quite complex.
+        This can become quite complex
+        (<a href="#texthatesyou"/>; 
+        <a href="#textlayout"/>; <a href="#CSStext"/>; <a href="#CSSwriting"/>).
       </p>
       <p>
         Rich text input typically 
@@ -397,7 +402,6 @@ text(mtcars$disp[30] + 2 + strwidth("Ferrari", font=4),
         Further complications include things like indentation of the first
         line of a paragraph and the vertical spacing between lines
         (known as the <em>leading</em> of the text).
-        (CITE "text hates you" and others)
       </p>
       <p>
         Another complication arises 
@@ -493,10 +497,10 @@ grid.text("Dino",
 
   <h3>Plotmath</h3>
   <p>
-    The "plotmath" feature in R graphics (CITE)
+    The "plotmath" feature in R graphics (<a href="#plotmath"/>)
     provides both (limited) markup and (limited) 
     typesetting for mathematical equations
-    (based on the TeX algorithm; CITE).
+    (based on the TeX algorithm; <a href="#Knuth:1986:TEX:1102013"/>).
   </p>
   <p>
     For example, the following code 
@@ -532,8 +536,7 @@ grid.text(expression(italic(x) - frac(mu, 2)))
     The other major limitation of this facility is that it is focused only 
     on mathematical expressions.  Additionally, the typesetting
     only really produces a nice result if a "mathematical" font
-    is used (e.g., the Computer Modern fonts; CITE my R Journal
-    article and CM in R report?).
+    is used (e.g., the Computer Modern fonts).
   </p>
   <p>
     <img src="Diagrams/api-plotmath.png" style="max-width: 100%"/>
@@ -541,8 +544,10 @@ grid.text(expression(italic(x) - frac(mu, 2)))
 
   <h3>'gridtext' and 'ggtext'</h3>
   <p>
-    The 'gridtext' package (CITE) and its 'ggplot2' (CITE) analogue,
-    'ggtext' (CITE), add basic rich text and basic typesetting on top
+    The 'gridtext' package (<a href="#pkg:gridtext"/>) 
+    and its 'ggplot2' (<a href="#ggplot2"/>) analogue,
+    'ggtext' (<a href="#pkg:ggtext"/>), 
+    add basic rich text and basic typesetting on top
     of the standard R graphics facilities.  
     With these packages, it
     is possible to describe rich text using a subset of markdown
@@ -581,7 +586,8 @@ grid.draw(richtext_grob(richtext))
 
   <h3>'systemfonts', 'textshaping', and 'ragg'</h3>
   <p>
-    The most significant contributions of the 'systemfonts' package,
+    The most significant contributions of the 'systemfonts' package
+    (<a href="#pkg:systemfonts"/>),
     in terms of typesetting, are that it allows more detailed
     specification of fonts, including the selection of font
     features like optional ligatures, and it can perform
@@ -589,7 +595,7 @@ grid.draw(richtext_grob(richtext))
     available in the user-specified font.
     The 'systemfonts' package also provides a typesetting 
     facility, but that is overshadowed by the facility that is offered
-    by its big brother, 'textshaping'.
+    by its big brother, 'textshaping' (<a href="#pkg:textshaping"/>).
   </p>
   <p>
     The primary purpose of the 'textshaping' package is to perform
@@ -612,7 +618,8 @@ grid.draw(richtext_grob(richtext))
     text, not glyphs.
   </p>
   <p>
-    The 'ragg' package does not perform typesetting itself, but 
+    The 'ragg' package (<a href="#pkg:ragg"/>)
+    does not perform typesetting itself, but 
     it provides graphics devices that make use of both 'systemfonts'
     and 'textshaping', so are capable of sophisticated typesetting.
     Even though we cannot feed rich text input to these devices (because of the 
@@ -671,14 +678,17 @@ dev.off()
 
   <h3>'dvir'</h3>
   <p>
-    This experimental package is not on CRAN, and has only been tested on Linux,
-    but is included to provide an alternative
+    The 'dvir' package (<a href="#pkg:dvir"/>)
+    is an experimental package that 
+    is not on CRAN, and has only been tested on Linux,
+    but it is included here to provide an alternative
     example of a package that can perform sophisticated typesetting.
   </p>
   <p>
     The 'dvir' package takes LaTeX code as input, which means that
     it can work with very rich text, and it makes use of one the main TeX
-    engines (pdftex or luatex;  CITE, CITE) to perform
+    engines (pdftex or luatex;  <a href="#pdftex"/>;  <a href="#luatex"/>) 
+    to perform
     typesetting, which means that it can produce a very wide range
     of results (including hyphenation, multi-column text, not to mention
     mathematical equations).  
@@ -1063,7 +1073,8 @@ shape_text(c("Ferrari", " Dino"), id=1,
   <h3>The 'xdvir' package</h3>
   <a name="xdvir"/>
   <p>
-    The 'xdvir' package is an evolution of the 'dvir' package
+    The 'xdvir' package (<a href="#pkg:xdvir"/>)
+    is an evolution of the 'dvir' package
     that is under active development 
     (on <a href="https://github.com/pmur002/xdvir">github</a>).
     Like 'dvir', the 'xdvir' package can read DVI files, as produced by
@@ -1422,7 +1433,7 @@ grid.glyph(glyphs, gp=gpar(col="grey"))
       </p>
       <p>
         The <code>pdf()</code> support does not embed fonts.
-        Some PDF viewers (e.g., ghostscript - CITE?) may cope
+        Some PDF viewers (e.g., ghostscript; <a href="#ghostscript"/>) may cope
         with this, but a more reliable result will be obtained by
         embedding the fonts with the <code>grDevices::embedGlyphs()</code>
         utility.
@@ -1431,8 +1442,9 @@ grid.glyph(glyphs, gp=gpar(col="grey"))
     <li>
       <p>
         Support is unlikely or impossible for some graphics devices.
-        For example, the 'svglite' graphics device [CITE] (because of the
-        underlying SVG language) does not have the ability to 
+        For example, the 'svglite' graphics device (<a href="#pkg:svglite"/>),
+        due to the nature of the 
+        underlying SVG language, does not have the ability to 
         render individual glyphs.
       </p>
     </li>
@@ -1565,6 +1577,75 @@ grid.glyph(glyphs, gp=gpar(col="grey"))
   <ul style="list-style-type: none">
     <li>
       <a name="R"/>
+    </li>
+    <li>
+      <a name="PDF"/>
+    </li>
+    <li>
+      <a name="CSS"/>
+    </li>
+    <li>
+      <a name="lamport86latex"/>
+    </li>
+    <li>
+      <a name="HTML"/>
+    </li>
+    <li>
+      <a name="markdown"/>
+    </li>
+    <li>
+      <a name="texthatesyou"/>
+    </li>
+    <li>
+      <a name="textlayout"/>
+    </li>
+    <li>
+      <a name="CSStext"/>
+    </li>
+    <li>
+      <a name="CSSwriting"/>
+    </li>
+    <li>
+      <a name="plotmath"/>
+    </li>
+    <li>
+      <a name="Knuth:1986:TEX:1102013"/>
+    </li>
+    <li>
+      <a name="pkg:gridtext"/>
+    </li>
+    <li>
+      <a name="pkg:ggtext"/>
+    </li>
+    <li>
+      <a name="ggplot2"/>
+    </li>
+    <li>
+      <a name="pdftex"/>
+    </li>
+    <li>
+      <a name="luatex"/>
+    </li>
+    <li>
+      <a name="ghostscript"/>
+    </li>
+    <li>
+      <a name="pkg:svglite"/>
+    </li>
+    <li>
+      <a name="pkg:systemfonts"/>
+    </li>
+    <li>
+      <a name="pkg:textshaping"/>
+    </li>
+    <li>
+      <a name="pkg:ragg"/>
+    </li>
+    <li>
+      <a name="pkg:dvir"/>
+    </li>
+    <li>
+      <a name="pkg:xdvir"/>
     </li>
   </ul>
 
