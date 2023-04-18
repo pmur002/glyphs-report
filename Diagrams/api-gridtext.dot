@@ -1,0 +1,34 @@
+
+digraph G {
+
+    node [style = filled; fillcolor = white,
+          fontcolor = black, fontsize = 12 ];
+    edge [fontcolor = black, fontsize = 12 ];
+
+    origin [shape = point, 
+            color = "#2297E6", penwidth = 2 ];
+    shaper [label = "{gridtext}",
+            color = "#2297E6", penwidth = 2 ];
+    engine [label = "graphics\nengine"];
+    device2 [label = "graphics\ndevice"];
+    grid [label = "{grid}",
+            color = "#2297E6", penwidth = 2 ];
+
+    dummy [shape = none; label = ""];
+
+    subgraph clusterR {
+        origin -> shaper [ label = "markdown\nHTML", fontname = courier,
+                           color = "#2297E6", penwidth = 2 ];
+        shaper -> grid [label = "richtext_grob()", fontname = courier,
+                        color = "#2297E6", penwidth = 2 ];
+        grid -> engine [label = "grid.text()", fontname = courier];
+        engine -> device2 [dir = both, headlabel = " \ndev->strWidth()\ndev->metricInfo()", 
+                           fontname = courier];
+        engine -> device2 [headlabel = " dev->text()\n ", fontname = courier];
+        color = none;
+
+        { rank = same; origin; shaper; grid; engine; device2 }
+    }
+
+}
+    

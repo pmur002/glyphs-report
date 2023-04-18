@@ -1,0 +1,46 @@
+
++ Data downloaded from the Statistics Bureau of Japan
+  https://www.stat.go.jp/english/index.html
+  via the "Statistics Dashboard"
+  https://dashboard.e-stat.go.jp/en/
+  on entries and departures from Japan (Jan 2007 to Dec 2022)
+  
+  ./migration.csv
+
++ upTeX file to typeset the (Japanese) y-label VERTICALLY ...
+
+  ./ylabel.tex
+
+  ... which is processed to DVI with ...
+
+  uplatex ylabel.tex 
+
+  ... and also generate "model answer" PDF output with ...
+
+  dvipdfm ylabel.dvi
+
+  ... which evince can view ok 
+  (though it substitutes IPAPMincho for Ryumin-Light)
+
+
++ Code to draw a bar plot based on the Statistics Dashboard one
+  (with Japanese characters ALL horizontal) ...
+
+  ./migration.R
+
+
++ NOTE the blog post that talks about using combination of vertical and
+  horizontal typesetting of Japanese text in newspapers to get good
+  space usage
+
+  https://www.smashingmagazine.com/2012/03/japanese-a-beautifully-complex-writing-system/
+
++ Some links to old Japanese visualisation and Japanese design/vis masters ...
+
+  https://datavizcatalogue.com/blog/japanese-contributions-to-data-visualisation/
+
+  http://www.paperposts.me/posts/2018/3/17/glorious-japanese-data-visualisation
+
+  https://www.humblebunny.com/importance-data-visualization-in-japan-engagement-seo/  
+
+

@@ -1,0 +1,26 @@
+
+digraph G {
+
+    graph [ nodesep = .5 ];
+    node [style = filled; fillcolor = white,
+          fontcolor = black, fontsize = 12 ];
+    edge [fontcolor = black, fontsize = 12 ];
+
+    origin [shape = point ];
+    engine [label = "graphics\nengine"];
+    device2 [label = "graphics\ndevice"];
+
+    subgraph clusterR {
+        origin -> engine [label = "plain text" ];
+        engine -> device2 [dir = both, headlabel = " \ndev->strWidth()\ndev->metricInfo()", 
+                           fontname = courier];
+        engine -> device2 [headlabel = "dev->text()\n ", 
+                           fontname = courier];
+        color = none;
+        fontname = "sans";
+
+        { rank = same; origin; engine; device2 }
+    }
+
+}
+    

@@ -1,0 +1,29 @@
+
+digraph G {
+
+    node [style = filled; fillcolor = white,
+          fontcolor = black, fontsize = 12 ];
+    edge [fontcolor = black, fontsize = 12 ];
+
+    origin [shape = point];
+    engine [label = "graphics\nengine"];
+    device [label = "{ragg}"];
+    grid [label = "{grid}"];
+    shaper [label = "{textshaping}",
+            color = "#61D04F", penwidth = 2 ];
+
+    subgraph clusterR {
+        origin -> grid [label = "plain text"];
+        grid -> engine [label = "grid.text()", fontname = courier];
+        color = none;
+
+        { rank = same; origin; grid; engine }
+    }
+
+    engine -> device [label = " dev->text()", fontname = courier];
+    device -> shaper;
+    shaper -> device [ color = "#61D04F", penwidth = 2 ];
+
+    { rank = same; shaper; device }
+}
+    

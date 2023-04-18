@@ -1,0 +1,1587 @@
+<?xml version="1.0" encoding="utf-8"?>
+<html>
+<head>
+  <style type="text/css">
+    @media print {
+      body { }
+      p.img { text-align: center; page-break-inside: avoid }
+      img.CC { display: inline }
+    }
+    @media screen {
+      body { max-width: 800px; margin: auto }
+      p.img { text-align: center }
+      img.CC { display: inline }
+    }
+    p.date {
+      font-size: smaller;
+      margin: 0;
+    }
+    p.versionHistory {
+      color: gray
+    }
+    p.versionHistory a {
+      color: gray
+    }
+    p.ref {
+      text-indent: -2em;
+      padding-left: 2em;
+    }
+    p.fig {
+      text-align: left;
+    }
+    p.fig img, img.plot {
+      box-shadow: 10px 10px 20px;
+      margin-top: 10px;
+      margin-bottom: 20px;      
+    }
+  </style>
+
+</head>
+<body>
+  <h1>Rendering Typeset Glyphs in R Graphics</h1>
+  <p>
+    <span style="font-style: italic">by Paul Murrell</span>
+    <a href="http://orcid.org"><img alt="" src="https://www.stat.auckland.ac.nz/~paul/ORCID/ORCiD.png" style="width: 16px; height: 16px; vertical-align: middle" /></a> <span style="font-family: mono; font-size: small"><a href="http://orcid.org/0000-0002-3224-8858">http://orcid.org/0000-0002-3224-8858</a></span><span style="font-style: italic">, Thomas Lin Pedersen, and Simon Urbanek</span>.
+  </p>
+  <p class="date">
+    Version 1:  
+    <rcode echo="FALSE" results="asis">
+cat(format(Sys.Date(), "%A %d %B %Y"))
+    </rcode>
+  </p>
+
+  <rcode id="init" echo="FALSE" message="FALSE" results="hide">
+opts_chunk$set(comment=" ", tidy=FALSE, 
+               dev="png", ## dev="svg",
+               dpi=96)
+options(width=100)
+## For wonky desktop set up
+options(bitmapType="cairo")
+  </rcode>
+  <rcode echo="FALSE" message="FALSE">
+    library(grid)
+  </rcode>
+
+  <hr/>
+  <p>
+    <a rel="license"
+    href="http://creativecommons.org/licenses/by/4.0/"><img class="CC"
+    alt="Creative Commons License" style="border-width:0"
+    src="https://i.creativecommons.org/l/by/4.0/88x31.png"/></a><br/><span
+    xmlns:dct="http://purl.org/dc/terms/"
+    property="dct:title">This document</span>
+    is licensed under a <a rel="license"
+    href="http://creativecommons.org/licenses/by/4.0/">Creative
+    Commons Attribution 4.0 International License</a>.
+  </p>
+  <hr/>
+  <p>
+    This document describes a new feature in the R graphics engine
+    to support rendering typeset glyphs.
+    This provides a basis for improved text rendering in R graphics.
+  </p>
+
+  <toc/>
+
+  <h2><a name="intro">Introduction</a></h2>
+  <p>
+    Most statistical plots contain text labels of some sort.
+    For example, the plot below contains 
+    axis labels, and tick mark labels.
+  </p>
+  <rcode id="basic" eval="FALSE">
+plot(mpg ~ disp, mtcars, pch=21, bg=rgb(0,0,0,.3), cex=1.2)
+  </rcode>
+  <rcode echo="FALSE" fig.width="5" fig.height="4">
+par(mex=.7, mar=c(5, 5, 2, 2))
+<<basic>>
+  </rcode>
+  <p>
+    In R (<a href="#R"/>), the user can typically provide character values
+    to customise the labels.  For example, the following code
+    provides more readable axis labels.
+  </p>
+  <rcode id="label" eval="FALSE">
+plot(mpg ~ disp, mtcars, pch=21, bg=rgb(0,0,0,.3), cex=1.2,
+     xlab="Displacement", ylab="Miles per Gallon")
+  </rcode>
+  <rcode echo="FALSE" fig.width="5" fig.height="4">
+par(mex=.7, mar=c(5, 5, 2, 2))
+<<label>>
+  </rcode>
+  <p>
+    In addition, R graphics provides several graphical parameters 
+    that control the appearance of the text, such as the font family,
+    the font face, the font size, and the colour.
+    For example, the following code makes the tick labels and
+    the axis labels bold and grey.
+  </p>
+  <rcode id="par" eval="FALSE">
+plot(mpg ~ disp, mtcars, pch=21, bg=rgb(0,0,0,.3), cex=1.2,
+     xlab="Displacement", ylab="Miles per Gallon",
+     font.axis=2, font.lab=2, col.axis="grey", col.lab="grey")
+  </rcode>
+  <rcode echo="FALSE" fig.width="5" fig.height="4">
+par(mex=.7, mar=c(5, 5, 2, 2))
+<<par>>
+  </rcode>
+  <p>
+    We can also draw individual text elements, with lower-level functions
+    like <code>text()</code>.  For example, the following code
+    draws a line from the point representing the Ferrari Dino to
+    a label.  The label is drawn using the colour
+    "racing red" 
+    (<a href="https://en.wikipedia.org/wiki/Rosso_corsa">rosso corsa</a>) 
+    and the
+    text is left justified relative
+    to the x-value of the data point (and the data point itself is drawn red).
+  </p>
+  <rcode id="text" eval="FALSE">
+rossoCorsa <- "#D40000"
+plot(mpg ~ disp, mtcars, pch=21, bg=rgb(0,0,0,.3), cex=1.2,
+     xlab="Displacement", ylab="Miles per Gallon",
+     font.axis=2, font.lab=2, col.axis="grey", col.lab="grey")
+lines(mtcars$disp[30] - c(0, 40, 40, 0),
+      mtcars$mpg[30] - c(0, 0, 7, 7))
+points(mtcars$disp[30], mtcars$mpg[30], bg=rossoCorsa, pch=21)
+text(mtcars$disp[30] + 2, mtcars$mpg[30] - 7, rownames(mtcars)[30], 
+     col=rossoCorsa, adj=c(0))
+  </rcode>
+  <rcode echo="FALSE" fig.width="5" fig.height="4">
+par(mex=.7, mar=c(5, 5, 2, 2))
+<<text>>
+  </rcode>
+  <p>
+    All of the examples so far require only a very simple text-drawing
+    model:  all we need to specify is the text to draw, as a character value, 
+    where to draw it
+    (including justification), and
+    what font, colour, etc to use.
+  </p>
+  <p>
+    This model is reflected in the lowest-level user interface for
+    drawing text in the 'graphics' package, which is shown below:
+    <code>x</code> and <code>y</code> provide the location;
+    <code>labels</code> provides the text to draw;
+    <code>adj</code>, <code>pos</code>, and <code>offset</code>
+    are all involved in the justification of the text; and
+    the remaining arguments control the font and colour selection.
+  </p>
+  <pre>
+text(x, y = NULL, labels = seq_along(x$x), 
+     adj = NULL, pos = NULL, offset = 0.5, 
+     vfont = NULL, cex = 1, col = NULL, font = NULL, ...)
+  </pre>
+  <p>
+    The alternative low-level graphics system, the 'grid'  package,
+    provides a similar user interface.
+  </p>
+  <pre>
+grid.text(label, x = unit(0.5, "npc"), y = unit(0.5, "npc"),
+          just = "centre", hjust = NULL, vjust = NULL, rot = 0,
+          check.overlap = FALSE, default.units = "npc",
+          name = NULL, gp = gpar(), draw = TRUE, vp = NULL)  
+  </pre>
+  <p>
+    This simple text model is also reflected in the interface between
+    the R graphics engine and graphics devices - the interface that is used by
+    developers of third-party graphics devices as well as for graphics 
+    devices provided by R itself:
+    <code>x</code> and <code>y</code> provide the location,
+    <code>str</code> is the text to draw, 
+    <code>rot</code> is an angle to draw the text at,
+    <code>hadj</code> describes justification,
+    and <code>gc</code> contains graphical parameter settings
+    (colours, fonts, etc).
+  </p>
+  <pre>
+dev->text(double x, double y, char *str, double rot, double hadj, 
+          pGEcontext gc);
+  </pre>
+  <p>
+    These interfaces are important because they place limits on
+    what the user is able to draw (easily) with R.  As a simple
+    example of something that we cannot (easily) do with R,
+    in the plot below we have drawn the label for the Ferrari Dino
+    with just the word "Ferrari" in racing red and using a bold-italic font;  
+    the word "Dino" is drawn (plain) black.
+  </p>
+  <rcode echo="FALSE" fig.width="5" fig.height="4">
+par(mex=.7, mar=c(5, 5, 2, 2))
+plot(mpg ~ disp, mtcars, pch=21, bg=rgb(0,0,0,.3), cex=1.2,
+     xlab="Displacement", ylab="Miles per Gallon",
+     font.axis=2, font.lab=2, col.axis="grey", col.lab="grey")
+lines(mtcars$disp[30] - c(0, 40, 40, 0),
+      mtcars$mpg[30] - c(0, 0, 7, 7))
+points(mtcars$disp[30], mtcars$mpg[30], bg=rossoCorsa, pch=21)
+text(mtcars$disp[30] + 2, mtcars$mpg[30] - 7, 
+     "Ferrari", col=rossoCorsa, font=4, adj=0)
+text(mtcars$disp[30] + 2 + strwidth("Ferrari", font=4), 
+     mtcars$mpg[30] - 7, " Dino", 
+     col="black", adj=0)
+  </rcode>
+  <p>
+    This simple modification is not (easily) possible with the text-drawing
+    interface in R because, in the interfaces shown above, 
+    we can only specify a single colour and font face for
+    a block of text.  
+  </p>
+  <p>
+    In addition to the limitations that the <em>user interface</em> imposes
+    on what users are able to
+    express with R code, the <em>graphics device interface</em> also limits
+    what graphics device authors are able to provide.
+    For example, the PDF language (CITE) is perfectly capable
+    of changing the colour and font of a word mid-sentence or
+    even mid-word, but the <code>pdf()</code> graphics device cannot offer
+    that level of detail because the R graphics engine will
+    never request it.
+  </p>
+  <p>
+    This is just a simple example of the limitations of the core
+    R graphics interface for text drawing.  Some other limitations 
+    include:
+  </p>
+  <ul>
+    <li>
+      <p>
+        A block of text can only be drawn with a single 
+        font family, font face, and colour.
+      </p>
+    </li>
+    <li>
+      <p>
+        Font specifications are limited to just a font family plus
+        a font "face", where the choice is restricted to "plain", "bold",
+        "italic", and "bold italic".  
+        We are unable to specify a numeric font "weight"
+        (for example, CSS (CITE) allows font weights from 100 to 900).
+      </p>
+      <p>
+        More generally, we are unable to select font variations 
+        such as condensed or access font features such as optional 
+        ligatures or number styles.
+      </p>
+    </li>
+    <li>
+      <p>
+        There is no support for line breaking.  If we want to break
+        text over more than one line, we must provide explicit new lines.
+        More sophisticated typesetting, such as paragraphs with indents,
+        are even further out of reach.
+      </p>
+    </li>
+  </ul>
+
+  <p>
+    The goal of the changes to the R graphics engine that are
+    described in this document is to support more sophisticated
+    text output.  For example, the changes allow us 
+    (with the help of <a href="#textshaping">the 'textshaping' package</a>) 
+    to layout a 
+    paragraph of text within a fixed width, with a mixture of
+    font styles, as shown in the plot below.
+    The plot shows the immigration statistics for Japan
+    covering the period when the COVID pandemic began.
+    The paragraph of text is a quote from the Japanese Minister
+    of Land, Infrastructure, Transport
+    and Tourism, Hiroshi Tabata.<a href="#chatgpt"/>
+  </p>
+  <p class="fig">
+    <a name="japan-textshaping"/>
+    <img src="Japan/migration-horizontal-en.png"
+         alt="Histogram of Immigration for Japan Sep 2019 to Dec 2022 (with English labels)"/>
+  </p>
+  <p>
+    The plot below shows a more ambitious example where 
+    (with the help of <a href="#xdvir">the 'xdvir' package</a>)
+    we have added the same quote to the same plot, but this time
+    in Japanese with the text typeset vertically (top-to-bottom and
+    right-to-left).<a href="#japanese"/> 
+    The y-axis label is also typeset vertically, which is a nice way
+    to save horizontal space without forcing the viewer
+    to turn their head 90 degrees.
+  </p>
+  <p class="fig">
+    <a name="japan-xdvir"/>
+    <img src="Japan/migration-vertical.png"
+         alt="Histogram of Immigration for Japan Sep 2019 to Dec 2022 (with vertical Japanese labels)"/>
+  </p>
+
+  <p>
+    The next section looks at what needs to happen in order
+    to allow these more sophisticated results to be produced with R.
+  </p>
+
+  <h2><a name="typesetting">Sophisticated text support</a></h2>
+  <p>
+    There are two main tasks involved in more sophisticated text drawing:
+  </p>
+  <ul>
+    <li>
+      <p>
+        <str>Rich text input:</str>
+        We need to provide a way to include information about
+        how text should be styled along with the text itself. 
+        Because the styling can change from word to word or even within a
+        word, this typically requires some sort of markup where the
+        styling is intermingled with the text, such as 
+        LaTeX, HTML/CSS and, to a lesser extent, markdown (CITE CITE CITE).
+        For example, the following code snippets demonstrate marked up
+        text for both LaTeX and HTML/CSS where one word is red and 
+        the other is black (by default).
+      </p>
+      <pre>
+{\color{red}Ferrari} Dino        
+      </pre>
+      <pre>
+&lt;span style="color: red"&gt;Ferrari&lt;/span&gt; Dino
+      </pre>
+      <p>
+        The information about styling will ideally include
+        details about fonts,
+        such as optional font features.
+      </p>
+    </li>
+    <li>
+      <p>
+        <str>Typesetting glyphs:</str>  
+        Given a set of rich text, we need to be able to
+        determine <em>which glyphs to use</em> and <em>where to draw them</em>.
+        This can become quite complex.
+      </p>
+      <p>
+        Rich text input typically 
+        involves <em>characters</em>, like "f" and "i", but what gets drawn
+        are <em>glyphs</em>, which are shapes within a font.  A simple 
+        example of the difference is the different appearance of 
+        the letters "f" and "i" in different fonts, e.g.,
+        a sans-serif font
+        <span style="font-family: sans-serif">f</span> and
+        <span style="font-family: sans-serif">i</span>
+        versus 
+        a monospace font 
+        <span style="font-family: monospace">f</span> and
+        <span style="font-family: monospace">i</span>.
+        More complex examples inclue ligature substituion,
+        where the two characters "f" and "i" result in a single "fi"
+        ligature glyph.
+      </p>
+      <p>
+        In some circumstances, 
+        determining the placement of glyphs can be straightforward, with
+        each glyph just drawn to the right of the previous one.
+        However, certain combinations of glyphs may require fine adjustments
+        known as <em>kerning</em>.  For example, a lower-case "o" may be
+        drawn further to the left if the preceding glyph is an upper-case "T".
+        There is also the concept of <em>tracking</em>, whereby the spacing
+        between all characters within a word are adjusted to either contract
+        or expand the space taken up by the word.
+        A more significant complication arises when we consider scripts
+        other than English, where glyphs are drawn from right-to-left 
+        rather than left-to-right, and for some scripts the main text
+        direction can be vertical rather than horizontal.
+        Things get even more complicated if text consists of a combination
+        of, for example, left-to-right and right-to-left text
+        (bidirectional text).
+      </p>
+      <p>
+        If the text is to span more than a single line, typesetting also 
+        involves determining where to place line breaks.  This can 
+        require adjustments to
+        inter-word spacing in order to satisfy justification
+        of the glyphs and may involve hyphenation if it is necessary to break
+        a line in the middle of a word.
+        Just determining possible locations for line breaks can be a challenge
+        for some scripts that do not place any spaces between words.
+        Further complications include things like indentation of the first
+        line of a paragraph and the vertical spacing between lines
+        (known as the <em>leading</em> of the text).
+        (CITE "text hates you" and others)
+      </p>
+      <p>
+        Another complication arises 
+        if the required glyphs are not available in the specified font.
+        In this case, typesetting may involve <em>font fallback</em>,
+        where the original font is replaced entirely (at least for some glyphs).
+      </p>
+      <p>
+        Many of these issues feed back into the issue of rich text
+        input because information about, for example,
+        tracking or leading requires the
+        relevant styling parameters to be specified along with the text.
+      </p>
+    </li>
+  </ul>
+
+  <h2><a name="current">Current offerings</a></h2>
+
+  <p>
+    The basic text-drawing model in the <a href="#intro"/>
+    was a bit of a straw man.  There aleady exist several ways to get around the
+    limitations of that model and get some of the more sophisticated 
+    text features in R.
+  </p>
+
+  <h3>Do it yourself</h3>
+  <p>
+    In the simplest typesetting situations, for example a single line
+    of left-to-right text, all we require in order to
+    arrange text components next to each other
+    is the width of each text component.
+    R graphics provides the <code>strwidth()</code> function
+    (and the graphics device API has <code>dev->strWidth()</code>)
+    for this purpose.
+    In the 'grid' graphics system, there is a <code>stringWidth()</code> 
+    function equivalent.
+  </p>
+  <p>
+    Graphics devices can also return more detailed character metrics
+    on a per-character basis (<code>dev->metricInfo()</code>)
+    and there is a user-level interface in 'grid' (<code>grobAscent()</code>
+    and <code>grobDescent()</code>).
+  </p>
+  <p>
+    With these functions, it is possible to draw text with different
+    styles and arrange the text components side by side.
+    It is even possible to implement a simple line-breaking algorithm,
+    using spaces as possible break points. 
+    For example, the following code draws the word Ferrari in racing
+    red and bold-italic face
+    and then the word Dino in black, with the placement of the
+    word Dino based on the width of the word Ferrari.
+  </p>
+  <rcode fig.width="1.5" fig.height=".5">
+ferrari <- textGrob("Ferrari ", 
+                    x=unit(5, "mm"), 
+                    just="left", 
+                    gp=gpar(col=rossoCorsa, fontface="bold.italic"))
+grid.draw(ferrari)
+grid.text("Dino", 
+          x=unit(5, "mm") + grobWidth(ferrari),
+          just="left")
+  </rcode>
+  <p>
+    However, more sophisticated typesetting is at best a lot of additional
+    work or else it is 
+    just not possible.  
+    For example, suppose that we want to typeset a word with a style
+    change that occurs between two characters that would normally involve
+    a kerning adjustment.  Simply drawing the characters side by side
+    is not a complete solution in that case.
+  </p>
+  <p>
+    The DIY situation is represented in the diagram below,
+    which indicates that we can only provide blocks of plain text as 
+    input to R graphics and, while we <em>could</em>
+    perform some simple arrangements of that text by
+    querying the graphics device for text metrics, it would be very
+    limited. In particular, we can only work with text characters,
+    not glyphs.
+  </p>
+  <p>
+    <img src="Diagrams/api-diy.png" style="max-width: 100%"/>
+  </p>
+  <p>
+    In later diagrams, rich text input will be indicated by 
+    <span style="color: #2297E6; font-weight: bold; font-family: sans">blue</span> 
+    nodes and edges
+    and typeset glyphs will be indicated by
+    <span style="color: #61D04F; font-weight: bold; font-family: sans">green</span> 
+    nodes and edges.
+  </p>
+
+  <h3>Plotmath</h3>
+  <p>
+    The "plotmath" feature in R graphics (CITE)
+    provides both (limited) markup and (limited) 
+    typesetting for mathematical equations
+    (based on the TeX algorithm; CITE).
+  </p>
+  <p>
+    For example, the following code 
+    describes text that involves a change in style 
+    (the <code>x</code> is italic),
+    plus a method for inputting characters that 
+    are otherwise difficult to type as plain text
+    (the word <code>mu</code> represents the Greek letter &#x03bc;),
+    and non-left-to-right arrangement of text 
+    (the &#x03bc; is drawn above the <code>2</code>).
+  </p>
+  <rcode fig.width="1.5" fig.height=".5">
+grid.text(expression(italic(x) - frac(mu, 2)))
+  </rcode>
+  <p>
+    R graphics can perform the typesetting of this rich text,
+    including deciding on which text characters to draw (e.g.,
+    <code>mu</code> becomes &#x03bc;) and calculating
+    where each character should be drawn (e.g., the placement of the
+    &#x03bc; above the <code>2</code>).
+  </p>
+  <p>
+    The diagram below indicates (with 
+    <span style="color: #2297E6; font-weight: bold; font-family: sans">blue</span>) 
+    that this facility does provide
+    a form of rich text input (in the form of R expressions),
+    although that is quite generous because the possibilities for
+    describing the styling of the output is very limited.
+    However, the typesetting of the resulting mathematical equation
+    still only works with text rather than with glyphs.
+  </p>
+  <p>
+    The other major limitation of this facility is that it is focused only 
+    on mathematical expressions.  Additionally, the typesetting
+    only really produces a nice result if a "mathematical" font
+    is used (e.g., the Computer Modern fonts; CITE my R Journal
+    article and CM in R report?).
+  </p>
+  <p>
+    <img src="Diagrams/api-plotmath.png" style="max-width: 100%"/>
+  </p>
+
+  <h3>'gridtext' and 'ggtext'</h3>
+  <p>
+    The 'gridtext' package (CITE) and its 'ggplot2' (CITE) analogue,
+    'ggtext' (CITE), add basic rich text and basic typesetting on top
+    of the standard R graphics facilities.  
+    With these packages, it
+    is possible to describe rich text using a subset of markdown
+    and HTML.  The packages also perform the appropriate typesetting
+    to draw the correct result.
+    For example, the following code uses a combination of markdown
+    and HTML (and CSS) markup to draw 
+    text with the word "Ferrari" in bold-italic red and "Dino" in black.
+  </p>
+  <rcode fig.width="1.5" fig.height=".5">
+library(gridtext)
+richtext <- '<span style="color: #D40000">***Ferrari***</span> Dino'
+grid.draw(richtext_grob(richtext))
+  </rcode>
+  <p>
+    The nice thing about these packages is that they provide a 
+    convenient interface for describing rich text as well as
+    typesetting the result.  
+    The diagram below indicates (with 
+    <span style="color: #2297E6; font-weight: bold; font-family: sans">blue</span>) 
+    that we again have genuine rich text
+    input.  However, the support for the markup languages in the input
+    is only partial and the typesetting
+    still deals in text values rather than glyphs
+    (because of the restrictions imposed by the R graphics engine).
+  </p>
+  <p>
+    These packages represent a significant step up
+    from the standard R graphics text drawing facilities.
+    However, it is only possible to produce simple typesetting
+    results.
+  </p>
+  <p>
+    <img src="Diagrams/api-gridtext.png" style="max-width: 100%"/>
+  </p>
+
+  <h3>'systemfonts', 'textshaping', and 'ragg'</h3>
+  <p>
+    The most significant contributions of the 'systemfonts' package,
+    in terms of typesetting, are that it allows more detailed
+    specification of fonts, including the selection of font
+    features like optional ligatures, and it can perform
+    font fallback, selecting a substitute font if a required glyph is not
+    available in the user-specified font.
+    The 'systemfonts' package also provides a typesetting 
+    facility, but that is overshadowed by the facility that is offered
+    by its big brother, 'textshaping'.
+  </p>
+  <p>
+    The primary purpose of the 'textshaping' package is to perform
+    typesetting.  Rich text input is converted into 
+    a set of glyphs and their locations.
+    With the help of 'systemfonts', 
+    this package handles multiple complex issues including
+    ligatures, kerning, and text direction
+    (including bidirectional text).
+    The 'textshaping' package can also perform basic line breaking.
+  </p>
+  <p>
+    The limitation with 'textshaping'
+    is the lack of a convenient way to describe
+    rich text.  At present, the only input format is a set of vectors
+    of text and accompanying font information.
+    The other problem is that R graphics cannot do anything with 
+    the raw glyph information that 'textshaping' generates.
+    The graphics engine works with
+    text, not glyphs.
+  </p>
+  <p>
+    The 'ragg' package does not perform typesetting itself, but 
+    it provides graphics devices that make use of both 'systemfonts'
+    and 'textshaping', so are capable of sophisticated typesetting.
+    Even though we cannot feed rich text input to these devices (because of the 
+    limitations of the R graphics engine), we can still see 
+    glimpses of what they can do.  For example, the following code
+    draws text written in Hebrew.<a href="#googletranslate"/>
+    The important point about this text is that it should be written from 
+    right-to-left.  Even without any rich text mark up, the 
+    'textshaping' package can detect the correct direction of the text
+    and typeset it appropriately.
+  </p>
+  <rcode fig.keep="none" results="hide">
+library(ragg)
+agg_png("hebrew-ragg.png", width=100, height=50, res=96)
+grid.text("פרארי דינו")
+dev.off()
+  </rcode>
+  <p class="fig">
+    <img src="hebrew-ragg.png"/>
+  </p>
+  <p>
+    By way of contrast, the code and image below show the result of 
+    attempting to draw this text on an X11 (non-Cairo) graphics device.
+    Notice that the Hebrew is incorrectly drawn left-to-right.
+  </p>
+  <rcode fig.keep="none" results="hide">
+png("hebrew-x11.png", type="Xlib", width=100, height=50, res=96)
+grid.text("פרארי דינו")
+dev.off()
+  </rcode>
+  <p class="fig">
+    <img src="hebrew-x11.png"/>
+  </p>
+
+  <p>
+    The 'ragg' package benefits from direct use of 'textshaping' 
+    because it can send text to 'textshaping' and get back raw
+    glyph information to draw.
+  </p>
+  <p>
+    The diagram below indicates (with 
+    <span style="color: #61D04F; font-weight: bold; font-family: sans">green</span>) 
+    that the 'ragg' package graphics devices, thanks to the
+    'textshaping' package, are able to perform serious
+    typesetting operations involving glyphs.
+    The limitation here is that 'ragg' can only receive input from the
+    R graphics engine, so it cannot work with rich text (because
+    the graphics engine only sends plain text to graphics devices).
+    Another issue is that this only (currently) works for the 'ragg'
+    devices, although other graphics devices could choose to
+    make use of 'textshaping' if they wish.
+  </p>
+  <p>
+    <img src="Diagrams/api-ragg.png" style="max-width: 100%"/>
+  </p>
+
+  <h3>'dvir'</h3>
+  <p>
+    This experimental package is not on CRAN, and has only been tested on Linux,
+    but is included to provide an alternative
+    example of a package that can perform sophisticated typesetting.
+  </p>
+  <p>
+    The 'dvir' package takes LaTeX code as input, which means that
+    it can work with very rich text, and it makes use of one the main TeX
+    engines (pdftex or luatex;  CITE, CITE) to perform
+    typesetting, which means that it can produce a very wide range
+    of results (including hyphenation, multi-column text, not to mention
+    mathematical equations).  
+    For example, the following code uses LaTeX markup to draw
+    text with the word "Ferrari" in bold-italic red and "Dino" in black. 
+  </p>
+  <rcode fig.width="1.5" fig.height=".5">
+library(dvir)
+tex <- 
+  "\\sffamily\\definecolor{rossoCorsa}{RGB}{212,0,0}{\\color{rossoCorsa}\\bfseries\\itshape Ferrari} Dino"
+grid.lualatex(tex)
+  </rcode>
+  <p>
+    The output from the TeX typesetting is a DVI file, which is essentially
+    a set of typeset glyph information.
+    The 'dvir' package is able to read the glyph information from
+    a DVI file, but it then hits difficulties because
+    R graphics cannot work with typeset glyph information.
+    The package has to do a lot of work to turn the glyph information
+    from a DVI file back
+    into text so that it can feed text into R graphics functions
+    to draw the TeX result.
+    There are also issues with making use of the detailed font 
+    information in a DVI file (given that R graphics can only
+    cope with a simplistic font description).
+  </p>
+  <p>
+    An example of the glyph-to-text problem is that, while some
+    glyphs can be represented in text, e.g., "fi" can be expressed as
+    a UNICODE character "\uFB01", some glyphs have no recognised 
+    representation
+    e.g., there is no UNICODE code point for the "ti" 
+    ligature.<a href="#unicodeligatures"/>
+  </p>
+  <p>
+    The diagram below indicates 
+    (with 
+    <span style="color: #2297E6; font-weight: bold; font-family: sans">blue</span> 
+    and
+    <span style="color: #61D04F; font-weight: bold; font-family: sans">green</span>) 
+    that the 'dvir' package, thanks
+    to its dependence on TeX, can work
+    with (very) rich text input that is properly typeset
+    in terms of precisely placed glyphs.
+    However, the 'dvir' package is hamstrung by having to convert 
+    from typeset glyph information back to text in order to work
+    with the R graphics system.
+  </p>
+  <p>
+    <img src="Diagrams/api-dvir.png" style="max-width: 100%"/>
+  </p>
+  <p>
+    The 'dvir' package suffers from several other serious limitations, 
+    including:
+    the dependence on a (substantial) 
+    TeX installation; the fact that the user has to write LaTeX to
+    describe the rich text input; and the fact that 'dvir' only works with
+    some graphics devices (e.g., the Cairo-based graphics devices).    
+  </p>
+
+  <h3>What is missing?</h3>
+  <p>
+    The existing packages described above 
+    show that a lot of the necessary pieces
+    that are required to draw more sophisticated text in R
+    exist in one form or another.  What is required in order
+    to bring all of the pieces together?
+  </p>
+  <p>
+    The simple summary is that we cannot do everything we want to
+    because the R graphics engine does not allow rich text to pass 
+    through to graphics devices <em>and</em>
+    the R graphics engine does not allow
+    typeset glyph information to pass through to graphics devices.
+  </p>
+  <p>
+    The obvious solutions are:  allow rich text to pass through to 
+    graphics devices and/or allow typeset glyphs to pass through to
+    graphics devices.  Allowing rich text requires several issues
+    to be resolved:  what sort of rich text should be allowed and 
+    how will that be passed through?  should there be a single
+    rich text format or should we allow multiple formats (with
+    possibly large implications for graphics devices)? 
+    At this stage, there is no 
+    strong consensus on these issues, so we have just focused on the 
+    second part of the problem:  allowing typeset glyphs to be passed through.
+    This allows multiple rich text formats and multiple
+    typesetting engines to be accommodated
+    and it is a much simpler task to decide on a single structure
+    for passing information about typeset glyphs
+    from the R graphics engine to graphics devices.
+  </p>
+  <p>
+    The following section describes the new interface in R graphics
+    that allows typeset glyph information to be passed to the
+    graphics engine, which then passes it on to graphics devices
+    for rendering.  The Section on <a href="#generating"/> 
+    describes some early experiments with packages for <em>generating</em>
+    typeset glyph information that can take advantage of this new
+    graphics  interface.
+  </p>
+
+  <h2><a name="glyphInfo">Rendering typeset glyphs</a></h2>
+
+  <p>
+    This section describes the new user interface and the new
+    graphics device interface that allows typeset glyph information
+    to be passed through to graphics devices.
+  </p>
+
+  <h3>The user interface</h3>
+  <p>
+    The first step is to describe a set of typeset glyphs.
+    This is achieved via the <code>grDevices::glyphInfo()</code> function,
+    along with additional support from 
+    the <code>grDevices::glyphFont()</code> function (at least).
+  </p>
+  <pre>
+glyphInfo(id, x, y, font, size, fontList, 
+          width, height, hAnchor, vAnchor,
+          col=NA)
+  </pre>
+  <p>
+    The <code>id</code> argument is a vector of glyph identifiers.
+    These are numeric indices into the list of glyphs within a font;
+    rather than specifying text to draw, we specify individual glyphs.
+    For example, the following <code>ids</code> specify the
+    70th, 434th, 559th, etc glyphs within a font (though not
+    necessarily the same font).
+    What those <code>ids</code> mean will depend entirely on the
+    fonts that we use.
+    There may be repetitions of some glyphs, e.g., the <code>id</code> 559
+    occurs several times, but only if those glyph identifiers refer to 
+    the same font.
+  </p>
+  <rcode>
+ids <- c(70, 434, 559, 559, 391, 559, 475, 1642, 37, 475, 510, 521)
+  </rcode>
+  <p>
+    The <code>x</code> and <code>y</code> arguments to <code>glyphInfo()</code>
+    provide the locations at which
+    to draw the glyphs.  These locations are in points (1/72 inches).
+    For example, the following locations describe a horizontal, left-to-right
+    placement of the glyphs (the <code>x</code> values increase monotonically
+    and the <code>y</code> values are constant).
+  </p>
+  <rcode>
+x <- c(0, 7.5, 15.03125, 20.140625, 25.203125, 33.484375, 38.59375, 
+       42.1875, 45.421875, 55.328125, 58.671875, 66.84375)
+y <- rep(0, 12)
+  </rcode>
+  <p>
+    The <code>font</code> argument to <code>glyphInfo()</code>
+    describes the font to use, though this is only an integer
+    index into the <code>fontList</code> argument, 
+    which contains the real font information
+    (see below).
+    The <code>size</code> argument to <code>glyphInfo()</code> is the size 
+    at which to draw the glyphs (in points).
+    For example, the following font indices and sizes specify that the 
+    first seven glyphs all come
+    from the same font (the first font in the
+    <code>fontList</code>) and the remaining five glyphs all come
+    from a different font (the second font in the <code>fontList</code>).
+    The glyphs are all at the same font size (12pt).
+  </p>
+  <rcode>
+fonts <- rep(1:2, c(7, 5))
+size <- rep(12, 4)
+  </rcode>
+  <p>
+    The <code>fontList</code> argument to <code>glyphInfo()</code>
+    is a list of fonts (that the <code>font</code> argument 
+    refers to).  Each component of the list should be constructed
+    using the <code>glyphFont()</code> function and the overall
+    list of fonts should be constructed using
+    <code>glyphFontList()</code>.
+  </p>
+  <pre>
+glyphFont(file, index, family, weight, style, PSname=NA)
+glyphFontList(...)
+  </pre>
+  <p>
+    The <code>glyphFont()</code> function specifies a font in precise detail via
+    a font <code>file</code>, an integer <code>index</code> 
+    (if the font file contains more than one font), plus
+    a <code>family</code> font name,
+    a numeric <code>weight</code>, and a character <code>style</code>.
+    For example, the following code describes two versions of
+    the Google font "Montserrat", one bold and italic and one plain.
+    These fonts are distributed as part of the 'grDevices' package.
+  </p>
+  <rcode>
+font1 <- glyphFont(system.file("fonts", "Montserrat", "static",
+                               "Montserrat-BoldItalic.ttf", 
+                               package="grDevices"),
+                   0, "Montserrat", 700, "italic")
+font2 <- glyphFont(system.file("fonts", "Montserrat", "static",
+                               "Montserrat-Medium.ttf", 
+                               package="grDevices"),
+                   0, "Montserrat", 400, "normal")
+  </rcode>
+  <p>
+    Going back to <code>glyphInfo()</code>, the <code>width</code> and
+    <code>height</code> arguments describe a bounding box around the
+    glyphs.  These will become more relevant later, as will the 
+    <code>hAnchor</code> and <code>vAnchor</code> arguments, which
+    can be left missing in simple cases 
+    (see the Section on <a href="#details"/>).
+    The following width and height provide a bounding box for the
+    glyphs in our example.
+  </p>
+  <rcode>
+width <- 74.46875
+height <- 13.11719
+  </rcode>
+  <p>
+    Finally, the <code>col</code> argument provides a colour for
+    each glyph.  A value of <code>NA</code> means that the colour
+    can be set at drawing time 
+    (see the Section on <a href="#details"/>).
+  </p>
+  <rcode>
+col <- rep(c(rossoCorsa, NA), c(7, 5))
+  </rcode>
+  <p>
+    We now have all that we need to create a complete set of glyph information.
+    The following code describes a set of twelve glyphs from two
+    <code>Montserrat</code> fonts, with the glyphs typeset horizontally from 
+    left-to-right.
+  </p>
+  <rcode>
+glyphs <- glyphInfo(ids, x, y, fonts, size, 
+                    glyphFontList(font1, font2),
+                    width, height, col=col)
+  </rcode>
+  <p>
+    All we need to do now is draw the glyphs.  This is achieved using the
+    <code>grid::grid.glyph()</code> function
+    (there is no interface for the 'graphics' package at this stage).
+  </p>
+  <pre>
+grid.glyph(glyphInfo,
+           x = .5, y = .5, default.units = "npc",
+           hjust = "centre", vjust = "centre",
+           gp = gpar(), vp = NULL, name = NULL)
+  </pre>
+  <p>
+    The only required argument to 
+    <code>grid::grid.glyph()</code> 
+    is the <code>glyphInfo</code>, as produced by the <code>glyphInfo()</code>
+    function.  The glyphs will be drawn
+    by default in the centre of the current viewport.
+    For example, the following code draws the set of glyphs that we
+    constructed above.  We can now finally see that the glyphs
+    that we have typeset spell out "Ferrari Dino".
+  </p>
+  <rcode fig.width="1.5" fig.height=".5">
+grid.glyph(glyphs)
+  </rcode>
+
+  <h3>The graphics device interface</h3>
+  <p>
+    The new user interface for rendering typeset glyphs is mirrored
+    in a new interface between the R graphics engine and graphics
+    devices.
+    This interface is slightly simpler because it only deals with
+    a set of glyphs that have a common <code>font</code>, 
+    <code>size</code>, <code>colour</code>, and
+    <code>rot</code>ation.
+    The <code>font</code> argument is an R object, with 
+    C-level accessors provided, such as 
+    <code>R_GE_glyphFontFile()</code>.
+  </p>
+  <pre>
+dev->glyph(int n, int *glyphs, double *x, double *y, 
+           SEXP font, double size,
+           int colour, double rot, pDevDesc dd);
+  </pre>
+  <p>
+    The diagram below indicates (with 
+    <span style="color: #61D04F; font-weight: bold; font-family: sans">green</span>) 
+    that the R graphics engine can now pass typeset glyph information
+    through to graphics devices.
+    So far, support for this 
+    feature has been added to Cairo-based devices, the <code>pdf()</code>
+    device, the <code>quartz()</code> device, and the devices
+    provided by the 'ragg' package (in an 
+    <a href="https://github.com/pmur002/ragg">experimental fork</a>).
+  </p>
+
+  <p>
+    <img src="Diagrams/api-glyph.png" style="max-width: 100%"/>
+  </p>
+
+  <h2><a name="generating">Generating typeset glyphs</a></h2>
+  <p>
+    The previous section described the information that can now be
+    provided to R in order to draw typeset glyphs.
+    We now turn to the problem of <em>generating</em>
+    that typeset glyph information.
+    How do we generate sensible glyph indices, x/y locations, 
+    and detailed font descriptions?
+    This is the job of a "typesetting engine".
+    R itself does not offer a typesetting engine at this stage,
+    so this is an area where third party packages can be developed.
+    This section looks at two packages that can already be used to
+    provide us with
+    typeset glyph information.
+  </p>
+
+  <h3>The 'textshaping' package</h3>
+  <a name="textshaping"/>
+  <p>
+    The 'textshaping' package was mentioned previously in the context of
+    providing typesetting support for the 'ragg' package.
+    The 'ragg' package only makes use of a subset of the typesetting 
+    capabilities of the 'textshaping' package because 'ragg' is only ever
+    sent plain text from the graphics engine, so it can only
+    send plain text on to the 'textshaping' package.
+    However, 'textshaping' also provides an R-level interface
+    for typesetting text via the <code>shape_text()</code> function.
+  </p>
+  <p>
+    This interface allows us to submit a limited form of rich text,
+    consisting of multiple text items, each with its own style 
+    (font information), plus overall layout information such as a maximum
+    width and paragraph indenting.
+  </p>
+  <p>
+    The result of a call to <code>shape_text()</code> 
+    is a set of typeset glyph information.
+    For example, the following code typesets the word
+    "Ferrari" and the word "Dino" using two 12pt Montserrat fonts.
+  </p>
+  <rcode>
+library(textshaping)
+  </rcode>
+  <rcode>
+shape_text(c("Ferrari", " Dino"), id=1, 
+           size=12,
+           path=c(system.file("fonts", "Montserrat", "static",
+                              "Montserrat-BoldItalic.ttf", package="grDevices"),
+                  system.file("fonts", "Montserrat", "static",
+                              "Montserrat-Medium.ttf", package="grDevices")),
+           index=0)
+  </rcode>
+  <p>
+    As demonstrated in the previous section, the result above provides
+    all of the information that we need to feed the new
+    typeset glyph interface, <code>glyphInfo()</code>
+    and then <code>grid.glyph()</code>, in order to render this result.
+  </p>
+  <p>
+    The <code>shape_text()</code> function does not (yet) provide access
+    to all of the capabilities of the 'textshaping' package.  See the
+    <a href="https://protect-au.mimecast.com/s/Qe7jC0YKnXhzz5jNfwESbr?domain=tidyverse.org/">"Modern Text Features in R" blog post</a> for more details
+    and examples.
+  </p>
+  <p>
+    The diagram below indicates 
+    (with 
+    <span style="color: #2297E6; font-weight: bold; font-family: sans">blue</span> 
+    and
+    <span style="color: #61D04F; font-weight: bold; font-family: sans">green</span>) 
+    that we can now use 'textshaping' to input rich text (in a limited format)
+    and produce typeset glyph information.  
+    The typeset glyphs can then pass through
+    the graphics engine to graphics devices, both those internal to R
+    and third-party devices.
+  </p>
+  <p>
+    <img src="Diagrams/api-glyph-textshaping.png" style="max-width: 100%"/>
+  </p>
+  <p>
+    This is the workflow that was used to layout the 
+    text quote from Hiroshi Tabata within the bar plot
+    of Japanese immigration data in the 
+    <a href="#japan-textshaping">Introduction</a>.
+  </p>
+
+  <h3>The 'xdvir' package</h3>
+  <a name="xdvir"/>
+  <p>
+    The 'xdvir' package is an evolution of the 'dvir' package
+    that is under active development 
+    (on <a href="https://github.com/pmur002/xdvir">github</a>).
+    Like 'dvir', the 'xdvir' package can read DVI files, as produced by
+    the TeX typesetting system.
+  </p>
+  <p>
+    In this scenario, we can work with very rich text in the form of
+    LaTeX code.  For example, the LaTeX code below describes
+    text with the word Ferrari in bold italic racing red and the
+    word "Dino" in a plain font.
+  </p>
+  <rcode echo="FALSE">
+cat(readLines("rich-text.tex"), sep="\n")
+  </rcode>
+  <p>
+    The result of typesetting that rich text is a DVI file
+    that contains 
+    typeset glyph information; which glyphs to draw from which
+    fonts and where to draw them.
+    For example, the output below shows (part of) the DVI file that is produced
+    by typesetting the LaTeX code above (using the <code>lualatex</code>
+    TeX engine).
+  </p>
+  <rcode echo="FALSE" message="FALSE">
+library(xdvir)
+options(xdvir.ttxCacheDir="/scratch/TTXfonts/")
+dvi <- xdvir::readDVI("rich-text.dvi")
+dviOut <- capture.output(print(dvi))
+first <- grep("^fnt_def", dviOut)[1] - 2
+last <- grep("'o'", dviOut)[1]
+cat(dviOut[first:last], sep="\n")
+  </rcode>
+  <p>
+    The 'xdvir' package extracts values from that DVI information 
+    to feed into the new typeset glyph interface, <code>glyphInfo()</code>,
+    and then on to <code>grid.glyph()</code> to render the result.
+    The difference from the 'dvir' package 
+    is that the typeset glyph information
+    from a DVI file can now be passed directly to R;
+    there is no longer a need to convert glyphs back into text 
+    in order to make things digestible by the R graphics engine.
+  </p>
+  <p>
+    The diagram below indicates 
+    (with 
+    <span style="color: #2297E6; font-weight: bold; font-family: sans">blue</span> 
+    and
+    <span style="color: #61D04F; font-weight: bold; font-family: sans">green</span>) 
+    that, with 'xdvir', we can make use of the TeX system to write rich text
+    and to produce typeset glyph information.
+    The typeset glyphs can then pass through
+    the graphics engine to graphics devices, both those internal to R
+    and third-party devices.
+  </p>
+  <p>
+    <img src="Diagrams/api-glyph-xdvir.png" style="max-width: 100%"/>
+  </p>
+  <p>
+    The potential value of the 'xdvir' package is very large because
+    the TeX system can be used to perform a wide range of sophisticated
+    typesetting tasks.  For example, this workflow was used
+    to produce the vertical Japanese text in the plot of Japanese 
+    immigration data in the
+    <a href="#japan-xdvir">Introduction</a>.
+    However, at the time of writing, the 'xdvir' package
+    has only been developed to the point of demonstrating a few
+    specific DVI files.
+  </p>
+
+  <h2><a name="details">Further details</a></h2>
+  <p>
+    The examples in the Section on <a href="#glyphInfo"/>
+    showed the information that is required to specify a set of
+    typeset glyphs.
+    However, that section did not address the issue of locating the
+    typeset glyphs within an R plot.
+    A call to <code>grid.glyph()</code> will by default just
+    centre the glyphs within the current 'grid' viewport.
+    In this section, we look at how to control the placement
+    of typeset glyphs in more detail.
+  </p>
+  <h3>Positioning typeset glyphs</h3>
+  <p>
+    The <code>grid.glyph()</code> function has arguments <code>x</code> 
+    and <code>y</code> to specify the location of the typeset glyphs
+    and <code>hjust</code> and <code>vjust</code> to specify the
+    justification of the typeset glyphs relative to that location.
+    For example, the following code draws the typeset glyphs left
+    justified relative to the left edge of the current viewport.
+  </p>
+  <rcode fig.width="1.5" fig.height=".5">
+grid.glyph(glyphs, x=0, hjust="left")
+  </rcode>
+  <p>
+    The horizontal justifications <code>"left"</code>,
+    <code>"centre"</code>, 
+    and <code>"right"</code>  (and <code>"center"</code>)
+    are always available
+    (and <code>"bottom"</code> and <code>"top"</code> for
+    vertical justification),
+    but it is also possible to specify other "anchor" points.
+    This requires specifying the anchor points as part of the
+    call to <code>glyphInfo()</code> and using the <code>glyphAnchor()</code>
+    function.
+  </p>
+  <p>
+    In order to demonstrate the idea of different anchors, the diagram
+    below shows a detailed view of just the typeset glyphs that
+    spell the word "Dino".  In this diagram, there are four glyphs
+    typeset horizontally;  the locations at which the glyphs are drawn
+    - the glyph "origins" - 
+    are represented by small black dots.
+    The blue rectangles show that each glyph has a width that determines
+    where the subsequent glyph will be placed (modulo kerning).
+    This leads to a simple idea of "left", the origin of the first 
+    glyph, and "right"x, the location where the next glyph would be 
+    placed after the last glyph, with a "centre" point half way between.
+    These provide the basis for the default horizontal justification
+    anchor points.
+  </p>
+  <p>
+    However, the red rectangles in the diagram 
+    show that each glyph also has a tight bounding box
+    around the actual rendered extent of the glyph.
+    The "ink" used to draw the "D" glyph only begins to the right of
+    the glyph origin and does not extend as far to the right as the 
+    width of the glyph.  This is repeated to varying degrees by the
+    three other glyphs.
+    This leads to the idea of other possible horizontal anchor points,
+    such as the leftmost and rightmost positions where ink is drawn,
+    denoted by "inkleft" and "inkright" on the diagram.
+  </p>
+  <p>
+    In the vertical direction, we have simple bottom and top anchor points 
+    that represent font-level bounds, akin to line height, but
+    there are also other possible anchor points, "inkbottom" and "inktop",
+    that are based on the tight bounding boxes of the glyphs.
+    Another very
+    important alternative anchor point is the "baseline" of the text; this is
+    the y location that would be used to vertically align this text
+    with another set of (horizontally typeset) glyphs.
+    Note that the "inkbottom" anchor is very slightly lower than the
+    "baseline" anchor because the bottom edge of the "o" dips
+    a tiny amount below the baseline.
+  </p>
+  <rcode echo="FALSE">
+oldwd <- setwd("Justification")
+source("justification.R")
+setwd(oldwd)
+  </rcode>
+  <p>
+    <img src="Justification/glyph-metrics.png" 
+         alt="A diagram of the detailed metrics of a set of glyphs that spell the word 'just'"/>
+  </p>
+  <p>
+    By default, the "Dino" glyphs will be centred on the current
+    'grid' viewport.  More specifically, the "centre" horizontal anchor
+    and the "centre" vertical anchor will be aligned with the
+    centre of the viewport (as indicated by grey lines in the 
+    image below).
+  </p>
+  <rcode id="centre-align" eval="FALSE">
+grid.glyph(dinoGlyphs)
+  </rcode>
+  <rcode echo="FALSE" fig.width="1.5" fig.height=".5">
+grid.segments(0, .5, 1, .5, gp=gpar(col="grey"))
+grid.segments(.5, 0, .5, 1, gp=gpar(col="grey"))
+<<centre-align>>
+  </rcode>
+  <p>
+    The <code>hAnchor</code> and <code>vAnchor</code> arguments to 
+    <code>glyphInfo()</code> allow additional anchor points to be 
+    specified by supplying a call to
+    the <code>glyphAnchor()</code> function and providing both a
+    location and a label for each anchor point.  
+    For example, the following code snippet shows part of a call to 
+    <code>glyphInfo()</code> that
+    specifies multiple vertical anchors as represented in the diagram
+    above.
+  </p>
+  <rcode eval="FALSE">
+dinoGlyphs <- 
+    glyphInfo(...,
+              vAnchor=glyphAnchor(c(fymin, vcentre, fymax,
+                                    min(ymin), 0, max(ymax))*scale,
+                                  label=c("bottom", "centre", "top",
+                                          "inkbottom", "baseline", "inktop")),
+              ...)
+  </rcode>
+  <p>
+    With those anchor points specified, we can align any of the anchor
+    points with an x/y location within a 'grid' 
+    viewport.  For example, the following code renders the
+    "Dino" glyphs and aligns the "bottom" anchor 
+    with the centre of the current viewport (indicated by a grey 
+    horizontal line).
+  </p>
+  <rcode id="bottom-align" eval="FALSE">
+grid.glyph(dinoGlyphs, y=.5, vjust="bottom")
+  </rcode>
+  <rcode echo="FALSE" fig.width="1.5" fig.height=".5">
+grid.segments(0, .5, 1, .5, gp=gpar(col="grey"))
+<<bottom-align>>
+  </rcode>
+  <p>
+    The following code repeats the render, but this time aligns
+    the "baseline" anchor with the centre of the viewport.
+  </p>
+  <rcode id="baseline-align" eval="FALSE">
+grid.glyph(dinoGlyphs, y=.5, vjust="baseline")
+  </rcode>
+  <rcode echo="FALSE" fig.width="1.5" fig.height=".5">
+grid.segments(0, .5, 1, .5, gp=gpar(col="grey"))
+<<baseline-align>>
+  </rcode>
+  <p>
+    It is also possible to specify horizontal or vertical justification
+    as a numeric value.  In this case, 0 corresponds to 
+    left/bottom-justification, 0.5 to centre-justification, and 
+    1 to right/top-justification.
+    For example, the following code renders the "Dino" glyphs
+    with <code>vjust=0</code>, which is the same as 
+    <code>vjust="bottom"</code>.
+  </p>
+  <rcode id="zero-align" eval="FALSE">
+grid.glyph(dinoGlyphs, y=.5, vjust=0)
+  </rcode>
+  <rcode echo="FALSE" fig.width="1.5" fig.height=".5">
+grid.segments(0, .5, 1, .5, gp=gpar(col="grey"))
+<<zero-align>>
+  </rcode>
+  <p>
+    However, rather than being limited to a finite set of
+    named anchor points,
+    numeric justification allows us to specify any value.
+    For example, the following code specifies <code>vjust=0.4</code>.
+    What this means is that the y location for the glyphs will be aligned
+    with a position 0.4 of the way up the height of the glyphs.
+  </p>
+  <rcode id="fraction-align" eval="FALSE">
+grid.glyph(dinoGlyphs, y=.5, vjust=0.4)
+  </rcode>
+  <rcode echo="FALSE" fig.width="1.5" fig.height=".5">
+grid.segments(0, .5, 1, .5, gp=gpar(col="grey"))
+<<fraction-align>>
+  </rcode>
+  <p>
+    Even greater flexibility is possible because, as well as being able
+    to define additional anchors as part of a set of typeset glyphs, we
+    can define additional widths and/or heights.
+    This requires calling the <code>glyphWidth()</code> and/or 
+    <code>glyphHeight()</code> function
+    and providing width or height values, a label for each width or height, and
+    a label that identifies a horizontal anchor for the left of each width
+    (or a vertical anchor for the bottom of each height).
+    For example, the following code snippet shows part of a call to 
+    <code>glyphInfo()</code> that
+    specifies multiple heights as represented in the diagram
+    above.
+  </p>
+  <rcode eval="FALSE">
+dinoGlyphs <- 
+    glyphInfo(...,
+              height=glyphHeight(c(height, inkheight, max(ymax))*scale,
+                                 label=c("height", "inkheight", "ascent"),
+                                 bottom=c("bottom", "inkbottom", "baseline")),
+              ...)
+  </rcode>
+  <p>
+    Given multiple heights, we can provide a numeric justification
+    and select the particular height that the justification is relative to
+    with the <code>glyphJust()</code> function.
+    For example, the following code specifies a numeric justification of
+    0 relative to the "ascent" height.  This is equivalent to
+    <code>vjust="baseline"</code>.
+  </p>
+  <rcode id="zero-ascent-align" eval="FALSE">
+grid.glyph(dinoGlyphs, y=.5, vjust=glyphJust(0, "ascent"))
+  </rcode>
+  <rcode echo="FALSE" fig.width="1.5" fig.height=".5">
+grid.segments(0, .5, 1, .5, gp=gpar(col="grey"))
+<<zero-ascent-align>>
+  </rcode>
+  <p>
+    The following code demonstrates that, as well as selecting any value between
+    0 and 1, it is also possible to use numeric justifications 
+    outside the 0 to 1 range.  Here we are aligning the "baseline" of
+    the typeset glyphs one full "ascent" height above the middle of the
+    current viewport.
+  </p>
+  <rcode id="one-ascent-align" eval="FALSE">
+grid.glyph(dinoGlyphs, y=.5, vjust=glyphJust(-1, "ascent"))
+  </rcode>
+  <rcode echo="FALSE" fig.width="1.5" fig.height=".5">
+grid.segments(0, .5, 1, .5, gp=gpar(col="grey"))
+<<one-ascent-align>>
+  </rcode>
+  <h3>Graphical parameters</h3>
+  <p>
+    Like most 'grid' functions,
+    the <code>grid.glyph()</code> function has a <code>gp</code>
+    argument for setting graphical parameters such as colour and line type.
+    However, <code>grid.glyph()</code> ignores most graphical parameter
+    settings because they have already been determined for the typeset 
+    glyphs.  In particular, <code>fontfamily</code>, 
+    <code>fontface</code>, and <code>fontsize</code> have no effect 
+    on typeset glyphs.
+  </p>
+  <p>
+    The one exception is the <code>col</code> (colour) setting.
+    The <code>col</code> argument to <code>glyphInfo</code> can 
+    contain <code>NA</code> values, in which case, the colour
+    of the glyphs will be taken from the <code>gp</code> setting
+    in <code>grid.glyph()</code> (or the current inherited settings).
+    For example, the <code>glyphs</code> that we constructed 
+    in the Section on <a href="#glyphInfo"/> specifed the colour
+    <code>rossoCorsa</code> for the first seven glyphs, but
+    <code>NA</code> for the last five glyphs.
+    In the following code, we render those glyphs again, specifying
+    <code>col="grey"</code>, so the last five glyphs are all drawn 
+    grey.
+  </p>
+  <rcode fig.width="1.5" fig.height=".5">
+grid.glyph(glyphs, gp=gpar(col="grey"))
+  </rcode>
+
+  <h2><a name="discussion">Discussion</a></h2>
+  <p>
+    This document describes the 
+    addition of an R graphics interface for rendering typeset glyphs.
+    This is largely groundwork for others to build upon.
+    There are two large problems to still resolve:
+    an interface that allows the user to enter rich (marked up) text;
+    and a typesetting engine that can layout the rich text to 
+    produce a set of typeset glyphs.
+    The packages 'textshaping' and 'xdvir' that are mentioned in this
+    document are examples of the sort of development that can now
+    take place to bring sophisticated text layout to R.
+  </p>
+  <h3>Limitations</h3>
+  <p>
+    For users and developers wanting to experiment with the new
+    capabilities, there are several important limitations:
+  </p>
+  <ul>
+    <li>
+      <p>
+        Support for <code>dev->glyph()</code> has only been implemented
+        so far for Cairo-based graphics devices and the <code>pdf()</code>
+        and <code>quartz()</code> devices.        
+      </p>
+      <p>
+        A proof-of-concept has also been developed for the 
+        'ragg' package, but only in an 
+        <a href="https://github.com/pmur002/ragg">experimental fork</a>.
+      </p>
+      <p>
+        The <code>pdf()</code> support does not embed fonts.
+        Some PDF viewers (e.g., ghostscript - CITE?) may cope
+        with this, but a more reliable result will be obtained by
+        embedding the fonts with the <code>grDevices::embedGlyphs()</code>
+        utility.
+      </p>
+    </li>
+    <li>
+      <p>
+        Support is unlikely or impossible for some graphics devices.
+        For example, the 'svglite' graphics device [CITE] (because of the
+        underlying SVG language) does not have the ability to 
+        render individual glyphs.
+      </p>
+    </li>
+    <li>
+      <p>
+        Glyph rendering may only work for True Type and Open Type fonts.
+        That is certainly true for the Cairo-based devices, with
+        Cairo graphics having dropped support for Type 1 fonts.
+      </p>
+    </li>
+    <li>
+      <p>
+        The device support has not been optimised at all at this stage.
+        For example, there is no caching of loaded fonts
+        on Cairo or Quartz devices.
+      </p>
+    </li>
+  </ul>
+  <!--
+  <h3>Future work</h3>
+  <p>    
+    Future plans to expand font description, e.g., include or allow
+    "axis" information (including custom axes) to select specific
+    fonts from variable fonts?
+  </p>
+  -->
+
+  <h2><a name="requirements">Technical requirements</a></h2>
+  <p>
+    The examples and discussion in this report relate to 
+    R version 4.3.0, plus the following packages:
+    'dvir' version 0.4-0 (experimental "glyphs" branch);
+    'systemfonts', 'textshaping', and 'ragg';
+    'xdvir' version 0.1-0.
+  </p>
+  <p>
+    This report was generated within a Docker container
+    (see <a href="#Resources">Resources</a> section below).
+  </p>
+
+  <h2><a name="Resources">Resources</a></h2>
+  <ul>
+    <li>
+      The <a href="glyphs.cml">raw source file</a> for this
+      report, a <a href="glyphs.xml">valid XML</a>
+      transformation of the source file, a <a
+      href="glyphs.Rhtml">'knitr' document</a> generated from
+      the XML file, 
+      two <a href="toc.R">R</a> <a href="bib.R">files</a> and
+      the <a href="glyphs.bib">bibtex file</a>
+      that are used to generate the table of contents and reference sections,
+      two <a href="common.xsl">XSL</a> <a
+      href="knitr.xsl">files</a> and an 
+      <a href="knit.R">R file</a> that are used to transform the XML to
+      the 'knitr' document, and a <a href="Makefile">Makefile</a> that
+      contains code for the other transformations and coordinates
+      everything.  
+      These materials are also available
+      on <a href="https://github.com/pmur002/glyphs-report/releases/tag/v1">github</a>.
+    </li>
+    <li>
+      This report was generated within a 
+      <a href="https://www.docker.com/">Docker</a> container.
+      The Docker command to build the report is included in the Makefile above.
+      The Docker image for the container is available from
+      <a href="https://hub.docker.com/r/pmur002/glyphs-report/">Docker Hub</a>;
+      alternatively, the image can be rebuilt from its 
+      <a href="Dockerfile">Dockerfile</a>.
+    </li>
+  </ul>
+
+  <h2>Footnotes</h2>
+  <div>
+    <p class="footnote">
+      <a name="googletranslate"/>
+      This is a 
+      <a href="https://translate.google.com/">Google Translate</a>
+      translation of "Ferrari Dino" into Hebrew.  I have no ability to read
+      or write Hebrew, so I can only apologise
+      for what Google Translate has produced.
+    </p>
+    <p class="footnote">
+      <a name="unicodeligatures"/>
+      And apparently ligatures like it
+      <a href="https://unicode.org/faq/ligature_digraph.html">never will be
+      added to UNICODE</a>.
+    </p>
+    <p class="footnote">
+      <a name="chatgpt"/>
+      This quote was made during a press conference on January 6, 2022, 
+      although that information was generated in a conversation with
+      <a href="https://openai.com/blog/chatgpt">ChatGPT</a>,
+      so it is not clear that this quote is real;
+      it could have been constructed by ChatGPT.
+      The Japanese version of the quote was also generated by 
+      ChatGPT so there is no claim made as to its accuracy, though
+      <a href="https://translate.google.com/">Google Translate</a>
+      suggests that it is not too far from sensible.
+    </p>
+    <p class="footnote">
+      <a name="japanese"/>
+      The data for this plot was taken from the 
+      <a href="https://www.stat.go.jp/english/index.html">Statistics 
+      Bureau of Japan</a> via their 
+      <a href="https://dashboard.e-stat.go.jp/en/">Statistics Dashboard</a>,
+      which has both an English and Japanese version.
+      The title and y-axis label were also copied from 
+      those sites so they are presumably reasonable translations
+      of the English (and vice versa). 
+    </p>
+  </div>
+
+  <h2>Acknowledgements</h2>
+  <p>
+    This work was partly funded by a donation from R Studio to
+    the University of Auckland Foundation.
+  </p>
+  
+  <h2>How to cite this report</h2>
+  <p>
+    Murrell, P., Pedersen, T. L., and Urbanek, S. (2023). "" 
+    Technical Report 2022-??, Department of Statistics, The University of Auckland. 
+    Version 1.
+    [ <a href="how-to-cite.bib">bib</a> |
+      <a href="http://dx.doi.org/">DOI</a> | 
+      <a href="https://stattech.blogs.auckland.ac.nz/">http</a> ]
+  </p>
+
+  <h2><a name="references">References</a></h2>
+  <ul style="list-style-type: none">
+    <li>
+      <a name="R"/>
+    </li>
+  </ul>
+
+  <hr/>
+  <p>
+    <a rel="license"
+    href="http://creativecommons.org/licenses/by/4.0/"><img class="CC"
+    alt="Creative Commons License" style="border-width:0"
+    src="https://i.creativecommons.org/l/by/4.0/88x31.png"/></a><br/><span
+    xmlns:dct="http://purl.org/dc/terms/"
+    property="dct:title">This document</span>
+    by <span xmlns:cc="http://creativecommons.org/ns#"
+    property="cc:attributionName">Paul
+    Murrell</span> is licensed under a <a rel="license"
+    href="http://creativecommons.org/licenses/by/4.0/">Creative
+    Commons Attribution 4.0 International License</a>.
+  </p>
+
+</body>
+</html>

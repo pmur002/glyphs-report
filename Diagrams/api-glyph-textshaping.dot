@@ -1,0 +1,38 @@
+
+digraph G {
+
+    node [style = filled; fillcolor = white,
+          color = "#61D04F", penwidth = 2,
+          fontcolor = black, fontsize = 12 ];
+    edge [color = "#61D04F", penwidth = 2,
+          fontcolor = black, fontname = courier, fontsize = 12 ];
+
+    origin [label = "", style = invis];
+    origin2 [shape = point,
+             color = "#2297E6", penwidth = 2 ];
+
+    grdevices [label = "{grDevices}" ];
+    engine [label = "graphics\nengine"];
+    device2 [label = "graphics\ndevice"];
+    grid [label = "{grid}"];
+    shaper [label = "{textshaping}",
+            color = "#2297E6", penwidth = 2 ];
+
+    subgraph clusterR {
+        origin -> grdevices [style = invis];
+        grdevices -> grid [label = "glyphInfo()", fontname = courier];
+        grid -> engine [label = "grid.glyph()", fontname = courier];
+        engine -> device2 [label = " dev->glyph()", fontname = courier];
+        color = none;
+
+        { rank = same; origin; grdevices; grid; engine; device2}
+    }
+
+    origin -> origin2 [style = invis];
+    origin2 -> shaper [label = "rich text",
+                       color = "#2297E6", penwidth = 2 ];
+    shaper -> grdevices [label = " shape_text()", fontname = courier];
+    { rank = same; origin2; shaper }
+
+}
+    

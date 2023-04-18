@@ -1,0 +1,37 @@
+
+digraph G {
+
+    node [style = filled; fillcolor = white,
+          fontcolor = black, fontsize = 12 ];
+    edge [fontcolor = black, fontname = courier, fontsize = 12 ];
+
+    origin [label = "", style = invis];
+    origin2 [label = "TeX",
+             color = "#2297E6", penwidth = 2 ];
+    glyphs [label = "DVI",
+            color = "#61D04F", penwidth = 2 ];
+    engine [label = "graphics\nengine"];
+    device2 [label = "Cairo\ndevice"];
+    grid [label = "{grid}"];
+    shaper [label = "{dvir}",
+            color = "#61D04F", penwidth = 2 ];
+
+    subgraph clusterR {
+        origin -> grid [style = invis];
+        grid -> engine [label = "grid.text()", fontname = courier];
+        engine -> device2 [label = " dev->text()", fontname = courier];
+        color = none;
+
+        { rank = same; origin; grid; engine; device2 }
+    }
+
+    origin -> origin2 [style = invis];
+    origin2 -> glyphs [label = "lualatex   ", fontname = courier,
+                       color = "#2297E6", penwidth = 2 ];
+    glyphs -> shaper [label = " readDVI()", fontname = courier,
+                      color = "#61D04F", penwidth = 2 ];
+    shaper -> grid [label = " grid.lualatex()", fontname = courier];
+
+    { rank = same; origin2; shaper; glyphs }
+}
+    
