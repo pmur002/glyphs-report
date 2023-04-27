@@ -104,7 +104,7 @@
   </p>
     <p class="date">
     Version 1:  
-Wednesday 19 April 2023
+Thursday 27 April 2023
   </p>
 
 
@@ -165,7 +165,7 @@ Wednesday 19 April 2023
 <div class="chunk" id="basic"><div class="rcode"><div class="source"><pre class="knitr r"><span class="hl kwd">plot</span><span class="hl std">(mpg</span> <span class="hl opt">~</span> <span class="hl std">disp, mtcars,</span> <span class="hl kwc">pch</span><span class="hl std">=</span><span class="hl num">21</span><span class="hl std">,</span> <span class="hl kwc">bg</span><span class="hl std">=</span><span class="hl kwd">rgb</span><span class="hl std">(</span><span class="hl num">0</span><span class="hl std">,</span><span class="hl num">0</span><span class="hl std">,</span><span class="hl num">0</span><span class="hl std">,</span><span class="hl num">.3</span><span class="hl std">),</span> <span class="hl kwc">cex</span><span class="hl std">=</span><span class="hl num">1.2</span><span class="hl std">)</span>
 </pre></div>
 </div></div>
-<div class="chunk" id="unnamed-chunk-3"><div class="rimage default"><img src="figure/unnamed-chunk-3-1.png" alt="plot of chunk unnamed-chunk-3" class="plot" /></div></div>
+<div class="chunk" id="basic-plot"><div class="rimage default"><img src="figure/basic-plot-1.png" alt="plot of chunk basic-plot" class="plot" /></div></div>
     <p>
     In R (<a href="#R">R Core Team, 2023</a>), the user can typically provide character values
     to customise the labels.  For example, the following code
@@ -175,7 +175,7 @@ Wednesday 19 April 2023
      <span class="hl kwc">xlab</span><span class="hl std">=</span><span class="hl str">&quot;Displacement&quot;</span><span class="hl std">,</span> <span class="hl kwc">ylab</span><span class="hl std">=</span><span class="hl str">&quot;Miles per Gallon&quot;</span><span class="hl std">)</span>
 </pre></div>
 </div></div>
-<div class="chunk" id="unnamed-chunk-4"><div class="rimage default"><img src="figure/unnamed-chunk-4-1.png" alt="plot of chunk unnamed-chunk-4" class="plot" /></div></div>
+<div class="chunk" id="label-plot"><div class="rimage default"><img src="figure/label-plot-1.png" alt="plot of chunk label-plot" class="plot" /></div></div>
     <p>
     In addition, R graphics provides several graphical parameters 
     that control the appearance of the text, such as the font family,
@@ -188,7 +188,7 @@ Wednesday 19 April 2023
      <span class="hl kwc">font.axis</span><span class="hl std">=</span><span class="hl num">2</span><span class="hl std">,</span> <span class="hl kwc">font.lab</span><span class="hl std">=</span><span class="hl num">2</span><span class="hl std">,</span> <span class="hl kwc">col.axis</span><span class="hl std">=</span><span class="hl str">&quot;grey&quot;</span><span class="hl std">,</span> <span class="hl kwc">col.lab</span><span class="hl std">=</span><span class="hl str">&quot;grey&quot;</span><span class="hl std">)</span>
 </pre></div>
 </div></div>
-<div class="chunk" id="unnamed-chunk-5"><div class="rimage default"><img src="figure/unnamed-chunk-5-1.png" alt="plot of chunk unnamed-chunk-5" class="plot" /></div></div>
+<div class="chunk" id="par-plot"><div class="rimage default"><img src="figure/par-plot-1.png" alt="plot of chunk par-plot" class="plot" /></div></div>
     <p>
     We can also draw individual text elements, with lower-level functions
     like <code>text()</code>.  For example, the following code
@@ -211,7 +211,7 @@ Wednesday 19 April 2023
      <span class="hl kwc">col</span><span class="hl std">=rossoCorsa,</span> <span class="hl kwc">adj</span><span class="hl std">=</span><span class="hl kwd">c</span><span class="hl std">(</span><span class="hl num">0</span><span class="hl std">))</span>
 </pre></div>
 </div></div>
-<div class="chunk" id="unnamed-chunk-6"><div class="rimage default"><img src="figure/unnamed-chunk-6-1.png" alt="plot of chunk unnamed-chunk-6" class="plot" /></div></div>
+<div class="chunk" id="text-plot"><div class="rimage default"><img src="figure/text-plot-1.png" alt="plot of chunk text-plot" class="plot" /></div></div>
     <p>
     All of the examples so far require only a very simple text-drawing
     model:  all we need to specify is the text to draw, as a character value, 
@@ -267,7 +267,7 @@ dev-&gt;text(double x, double y, char *str, double rot, double hadj,
     with just the word "Ferrari" in racing red and using a bold-italic font;  
     the word "Dino" is drawn (plain) black.
   </p>
-<div class="chunk" id="unnamed-chunk-7"><div class="rimage default"><img src="figure/unnamed-chunk-7-1.png" alt="plot of chunk unnamed-chunk-7" class="plot" /></div></div>
+<div class="chunk" id="limitations-plot"><div class="rimage default"><img src="figure/limitations-plot-1.png" alt="plot of chunk limitations-plot" class="plot" /></div></div>
     <p>
     This simple modification is not (easily) possible with the text-drawing
     interface in R because, in the interfaces shown above, 
@@ -497,7 +497,7 @@ dev-&gt;text(double x, double y, char *str, double rot, double hadj,
     and then the word Dino in black, with the placement of the
     word Dino based on the width of the word Ferrari.
   </p>
-<div class="chunk" id="unnamed-chunk-8"><div class="rcode"><div class="source"><pre class="knitr r"><span class="hl std">ferrari</span> <span class="hl kwb">&lt;-</span> <span class="hl kwd">textGrob</span><span class="hl std">(</span><span class="hl str">&quot;Ferrari &quot;</span><span class="hl std">,</span>
+<div class="chunk" id="diy"><div class="rcode"><div class="source"><pre class="knitr r"><span class="hl std">ferrari</span> <span class="hl kwb">&lt;-</span> <span class="hl kwd">textGrob</span><span class="hl std">(</span><span class="hl str">&quot;Ferrari &quot;</span><span class="hl std">,</span>
                     <span class="hl kwc">x</span><span class="hl std">=</span><span class="hl kwd">unit</span><span class="hl std">(</span><span class="hl num">5</span><span class="hl std">,</span> <span class="hl str">&quot;mm&quot;</span><span class="hl std">),</span>
                     <span class="hl kwc">just</span><span class="hl std">=</span><span class="hl str">&quot;left&quot;</span><span class="hl std">,</span>
                     <span class="hl kwc">gp</span><span class="hl std">=</span><span class="hl kwd">gpar</span><span class="hl std">(</span><span class="hl kwc">col</span><span class="hl std">=rossoCorsa,</span> <span class="hl kwc">fontface</span><span class="hl std">=</span><span class="hl str">&quot;bold.italic&quot;</span><span class="hl std">))</span>
@@ -506,7 +506,7 @@ dev-&gt;text(double x, double y, char *str, double rot, double hadj,
           <span class="hl kwc">x</span><span class="hl std">=</span><span class="hl kwd">unit</span><span class="hl std">(</span><span class="hl num">5</span><span class="hl std">,</span> <span class="hl str">&quot;mm&quot;</span><span class="hl std">)</span> <span class="hl opt">+</span> <span class="hl kwd">grobWidth</span><span class="hl std">(ferrari),</span>
           <span class="hl kwc">just</span><span class="hl std">=</span><span class="hl str">&quot;left&quot;</span><span class="hl std">)</span>
 </pre></div>
-</div><div class="rimage default"><img src="figure/unnamed-chunk-8-1.png" alt="plot of chunk unnamed-chunk-8" class="plot" /></div></div>
+</div><div class="rimage default"><img src="figure/diy-1.png" alt="plot of chunk diy" class="plot" /></div></div>
     <p>
     However, more sophisticated typesetting is at best a lot of additional
     work or else it is 
@@ -553,9 +553,9 @@ dev-&gt;text(double x, double y, char *str, double rot, double hadj,
     and non-left-to-right arrangement of text 
     (the μ is drawn above the <code>2</code>).
   </p>
-<div class="chunk" id="unnamed-chunk-9"><div class="rcode"><div class="source"><pre class="knitr r"><span class="hl kwd">grid.text</span><span class="hl std">(</span><span class="hl kwd">expression</span><span class="hl std">(</span><span class="hl kwd">italic</span><span class="hl std">(x)</span> <span class="hl opt">-</span> <span class="hl kwd">frac</span><span class="hl std">(mu,</span> <span class="hl num">2</span><span class="hl std">)))</span>
+<div class="chunk" id="plotmath"><div class="rcode"><div class="source"><pre class="knitr r"><span class="hl kwd">grid.text</span><span class="hl std">(</span><span class="hl kwd">expression</span><span class="hl std">(</span><span class="hl kwd">italic</span><span class="hl std">(x)</span> <span class="hl opt">-</span> <span class="hl kwd">frac</span><span class="hl std">(mu,</span> <span class="hl num">2</span><span class="hl std">)))</span>
 </pre></div>
-</div><div class="rimage default"><img src="figure/unnamed-chunk-9-1.png" alt="plot of chunk unnamed-chunk-9" class="plot" /></div></div>
+</div><div class="rimage default"><img src="figure/plotmath-1.png" alt="plot of chunk plotmath" class="plot" /></div></div>
     <p>
     R graphics can perform the typesetting of this rich text,
     including deciding on which text characters to draw (e.g.,
@@ -597,11 +597,11 @@ dev-&gt;text(double x, double y, char *str, double rot, double hadj,
     and HTML (and CSS) markup to draw 
     text with the word "Ferrari" in bold-italic red and "Dino" in black.
   </p>
-<div class="chunk" id="unnamed-chunk-10"><div class="rcode"><div class="source"><pre class="knitr r"><span class="hl kwd">library</span><span class="hl std">(gridtext)</span>
+<div class="chunk" id="ggtext"><div class="rcode"><div class="source"><pre class="knitr r"><span class="hl kwd">library</span><span class="hl std">(gridtext)</span>
 <span class="hl std">richtext</span> <span class="hl kwb">&lt;-</span> <span class="hl str">'&lt;span style=&quot;color: #D40000&quot;&gt;***Ferrari***&lt;/span&gt; Dino'</span>
 <span class="hl kwd">grid.draw</span><span class="hl std">(</span><span class="hl kwd">richtext_grob</span><span class="hl std">(richtext))</span>
 </pre></div>
-</div><div class="rimage default"><img src="figure/unnamed-chunk-10-1.png" alt="plot of chunk unnamed-chunk-10" class="plot" /></div></div>
+</div><div class="rimage default"><img src="figure/ggtext-1.png" alt="plot of chunk ggtext" class="plot" /></div></div>
     <p>
     The nice thing about these packages is that they provide a 
     convenient interface for describing rich text as well as
@@ -670,7 +670,7 @@ dev-&gt;text(double x, double y, char *str, double rot, double hadj,
     'textshaping' package can detect the correct direction of the text
     and typeset it appropriately.
   </p>
-<div class="chunk" id="unnamed-chunk-11"><div class="rcode"><div class="source"><pre class="knitr r"><span class="hl kwd">library</span><span class="hl std">(ragg)</span>
+<div class="chunk" id="unnamed-chunk-3"><div class="rcode"><div class="source"><pre class="knitr r"><span class="hl kwd">library</span><span class="hl std">(ragg)</span>
 <span class="hl kwd">agg_png</span><span class="hl std">(</span><span class="hl str">&quot;hebrew-ragg.png&quot;</span><span class="hl std">,</span> <span class="hl kwc">width</span><span class="hl std">=</span><span class="hl num">100</span><span class="hl std">,</span> <span class="hl kwc">height</span><span class="hl std">=</span><span class="hl num">50</span><span class="hl std">,</span> <span class="hl kwc">res</span><span class="hl std">=</span><span class="hl num">96</span><span class="hl std">)</span>
 <span class="hl kwd">grid.text</span><span class="hl std">(</span><span class="hl str">&quot;פרארי דינו&quot;</span><span class="hl std">)</span>
 <span class="hl kwd">dev.off</span><span class="hl std">()</span>
@@ -684,7 +684,8 @@ dev-&gt;text(double x, double y, char *str, double rot, double hadj,
     attempting to draw this text on an X11 (non-Cairo) graphics device.
     Notice that the Hebrew is incorrectly drawn left-to-right.
   </p>
-<div class="chunk" id="unnamed-chunk-12"><div class="rcode"><div class="source"><pre class="knitr r"><span class="hl kwd">png</span><span class="hl std">(</span><span class="hl str">&quot;hebrew-x11.png&quot;</span><span class="hl std">,</span> <span class="hl kwc">type</span><span class="hl std">=</span><span class="hl str">&quot;Xlib&quot;</span><span class="hl std">,</span> <span class="hl kwc">width</span><span class="hl std">=</span><span class="hl num">100</span><span class="hl std">,</span> <span class="hl kwc">height</span><span class="hl std">=</span><span class="hl num">50</span><span class="hl std">,</span> <span class="hl kwc">res</span><span class="hl std">=</span><span class="hl num">96</span><span class="hl std">)</span>
+    <!-- Fixed image generated on my machine and then saved; hence eval=FALSE -->
+<div class="chunk" id="unnamed-chunk-4"><div class="rcode"><div class="source"><pre class="knitr r"><span class="hl kwd">png</span><span class="hl std">(</span><span class="hl str">&quot;hebrew-x11.png&quot;</span><span class="hl std">,</span> <span class="hl kwc">type</span><span class="hl std">=</span><span class="hl str">&quot;Xlib&quot;</span><span class="hl std">,</span> <span class="hl kwc">width</span><span class="hl std">=</span><span class="hl num">100</span><span class="hl std">,</span> <span class="hl kwc">height</span><span class="hl std">=</span><span class="hl num">50</span><span class="hl std">,</span> <span class="hl kwc">res</span><span class="hl std">=</span><span class="hl num">96</span><span class="hl std">)</span>
 <span class="hl kwd">grid.text</span><span class="hl std">(</span><span class="hl str">&quot;פרארי דינו&quot;</span><span class="hl std">)</span>
 <span class="hl kwd">dev.off</span><span class="hl std">()</span>
 </pre></div>
@@ -732,12 +733,12 @@ dev-&gt;text(double x, double y, char *str, double rot, double hadj,
     For example, the following code uses LaTeX markup to draw
     text with the word "Ferrari" in bold-italic red and "Dino" in black. 
   </p>
-<div class="chunk" id="unnamed-chunk-13"><div class="rcode"><div class="source"><pre class="knitr r"><span class="hl kwd">library</span><span class="hl std">(dvir)</span>
+<div class="chunk" id="dvir"><div class="rcode"><div class="source"><pre class="knitr r"><span class="hl kwd">library</span><span class="hl std">(dvir)</span>
 <span class="hl std">tex</span> <span class="hl kwb">&lt;-</span>
   <span class="hl str">&quot;\\sffamily\\definecolor{rossoCorsa}{RGB}{212,0,0}{\\color{rossoCorsa}\\bfseries\\itshape Ferrari} Dino&quot;</span>
 <span class="hl kwd">grid.lualatex</span><span class="hl std">(tex)</span>
 </pre></div>
-</div><div class="rimage default"><img src="figure/unnamed-chunk-13-1.png" alt="plot of chunk unnamed-chunk-13" class="plot" /></div></div>
+</div><div class="rimage default"><img src="figure/dvir-1.png" alt="plot of chunk dvir" class="plot" /></div></div>
     <p>
     The output from the TeX typesetting is a DVI file, which is essentially
     a set of typeset glyph information.
@@ -859,7 +860,7 @@ glyphInfo(id, x, y, font, size, fontList,
     occurs several times, but only if those glyph identifiers refer to 
     the same font.
   </p>
-<div class="chunk" id="unnamed-chunk-14"><div class="rcode"><div class="source"><pre class="knitr r"><span class="hl std">ids</span> <span class="hl kwb">&lt;-</span> <span class="hl kwd">c</span><span class="hl std">(</span><span class="hl num">70</span><span class="hl std">,</span> <span class="hl num">434</span><span class="hl std">,</span> <span class="hl num">559</span><span class="hl std">,</span> <span class="hl num">559</span><span class="hl std">,</span> <span class="hl num">391</span><span class="hl std">,</span> <span class="hl num">559</span><span class="hl std">,</span> <span class="hl num">475</span><span class="hl std">,</span> <span class="hl num">1642</span><span class="hl std">,</span> <span class="hl num">37</span><span class="hl std">,</span> <span class="hl num">475</span><span class="hl std">,</span> <span class="hl num">510</span><span class="hl std">,</span> <span class="hl num">521</span><span class="hl std">)</span>
+<div class="chunk" id="unnamed-chunk-5"><div class="rcode"><div class="source"><pre class="knitr r"><span class="hl std">ids</span> <span class="hl kwb">&lt;-</span> <span class="hl kwd">c</span><span class="hl std">(</span><span class="hl num">70</span><span class="hl std">,</span> <span class="hl num">434</span><span class="hl std">,</span> <span class="hl num">559</span><span class="hl std">,</span> <span class="hl num">559</span><span class="hl std">,</span> <span class="hl num">391</span><span class="hl std">,</span> <span class="hl num">559</span><span class="hl std">,</span> <span class="hl num">475</span><span class="hl std">,</span> <span class="hl num">1642</span><span class="hl std">,</span> <span class="hl num">37</span><span class="hl std">,</span> <span class="hl num">475</span><span class="hl std">,</span> <span class="hl num">510</span><span class="hl std">,</span> <span class="hl num">521</span><span class="hl std">)</span>
 </pre></div>
 </div></div>
     <p>
@@ -870,7 +871,7 @@ glyphInfo(id, x, y, font, size, fontList,
     placement of the glyphs (the <code>x</code> values increase monotonically
     and the <code>y</code> values are constant).
   </p>
-<div class="chunk" id="unnamed-chunk-15"><div class="rcode"><div class="source"><pre class="knitr r"><span class="hl std">x</span> <span class="hl kwb">&lt;-</span> <span class="hl kwd">c</span><span class="hl std">(</span><span class="hl num">0</span><span class="hl std">,</span> <span class="hl num">7.5</span><span class="hl std">,</span> <span class="hl num">15.03125</span><span class="hl std">,</span> <span class="hl num">20.140625</span><span class="hl std">,</span> <span class="hl num">25.203125</span><span class="hl std">,</span> <span class="hl num">33.484375</span><span class="hl std">,</span> <span class="hl num">38.59375</span><span class="hl std">,</span>
+<div class="chunk" id="unnamed-chunk-6"><div class="rcode"><div class="source"><pre class="knitr r"><span class="hl std">x</span> <span class="hl kwb">&lt;-</span> <span class="hl kwd">c</span><span class="hl std">(</span><span class="hl num">0</span><span class="hl std">,</span> <span class="hl num">7.5</span><span class="hl std">,</span> <span class="hl num">15.03125</span><span class="hl std">,</span> <span class="hl num">20.140625</span><span class="hl std">,</span> <span class="hl num">25.203125</span><span class="hl std">,</span> <span class="hl num">33.484375</span><span class="hl std">,</span> <span class="hl num">38.59375</span><span class="hl std">,</span>
        <span class="hl num">42.1875</span><span class="hl std">,</span> <span class="hl num">45.421875</span><span class="hl std">,</span> <span class="hl num">55.328125</span><span class="hl std">,</span> <span class="hl num">58.671875</span><span class="hl std">,</span> <span class="hl num">66.84375</span><span class="hl std">)</span>
 <span class="hl std">y</span> <span class="hl kwb">&lt;-</span> <span class="hl kwd">rep</span><span class="hl std">(</span><span class="hl num">0</span><span class="hl std">,</span> <span class="hl num">12</span><span class="hl std">)</span>
 </pre></div>
@@ -890,7 +891,7 @@ glyphInfo(id, x, y, font, size, fontList,
     from a different font (the second font in the <code>fontList</code>).
     The glyphs are all at the same font size (12pt).
   </p>
-<div class="chunk" id="unnamed-chunk-16"><div class="rcode"><div class="source"><pre class="knitr r"><span class="hl std">fonts</span> <span class="hl kwb">&lt;-</span> <span class="hl kwd">rep</span><span class="hl std">(</span><span class="hl num">1</span><span class="hl opt">:</span><span class="hl num">2</span><span class="hl std">,</span> <span class="hl kwd">c</span><span class="hl std">(</span><span class="hl num">7</span><span class="hl std">,</span> <span class="hl num">5</span><span class="hl std">))</span>
+<div class="chunk" id="unnamed-chunk-7"><div class="rcode"><div class="source"><pre class="knitr r"><span class="hl std">fonts</span> <span class="hl kwb">&lt;-</span> <span class="hl kwd">rep</span><span class="hl std">(</span><span class="hl num">1</span><span class="hl opt">:</span><span class="hl num">2</span><span class="hl std">,</span> <span class="hl kwd">c</span><span class="hl std">(</span><span class="hl num">7</span><span class="hl std">,</span> <span class="hl num">5</span><span class="hl std">))</span>
 <span class="hl std">size</span> <span class="hl kwb">&lt;-</span> <span class="hl kwd">rep</span><span class="hl std">(</span><span class="hl num">12</span><span class="hl std">,</span> <span class="hl num">4</span><span class="hl std">)</span>
 </pre></div>
 </div></div>
@@ -916,7 +917,7 @@ glyphFontList(...)
     the Google font "Montserrat", one bold and italic and one plain.
     These fonts are distributed as part of the 'grDevices' package.
   </p>
-<div class="chunk" id="unnamed-chunk-17"><div class="rcode"><div class="source"><pre class="knitr r"><span class="hl std">font1</span> <span class="hl kwb">&lt;-</span> <span class="hl kwd">glyphFont</span><span class="hl std">(</span><span class="hl kwd">system.file</span><span class="hl std">(</span><span class="hl str">&quot;fonts&quot;</span><span class="hl std">,</span> <span class="hl str">&quot;Montserrat&quot;</span><span class="hl std">,</span> <span class="hl str">&quot;static&quot;</span><span class="hl std">,</span>
+<div class="chunk" id="unnamed-chunk-8"><div class="rcode"><div class="source"><pre class="knitr r"><span class="hl std">font1</span> <span class="hl kwb">&lt;-</span> <span class="hl kwd">glyphFont</span><span class="hl std">(</span><span class="hl kwd">system.file</span><span class="hl std">(</span><span class="hl str">&quot;fonts&quot;</span><span class="hl std">,</span> <span class="hl str">&quot;Montserrat&quot;</span><span class="hl std">,</span> <span class="hl str">&quot;static&quot;</span><span class="hl std">,</span>
                                <span class="hl str">&quot;Montserrat-BoldItalic.ttf&quot;</span><span class="hl std">,</span>
                                <span class="hl kwc">package</span><span class="hl std">=</span><span class="hl str">&quot;grDevices&quot;</span><span class="hl std">),</span>
                    <span class="hl num">0</span><span class="hl std">,</span> <span class="hl str">&quot;Montserrat&quot;</span><span class="hl std">,</span> <span class="hl num">700</span><span class="hl std">,</span> <span class="hl str">&quot;italic&quot;</span><span class="hl std">)</span>
@@ -936,7 +937,7 @@ glyphFontList(...)
     The following width and height provide a bounding box for the
     glyphs in our example.
   </p>
-<div class="chunk" id="unnamed-chunk-18"><div class="rcode"><div class="source"><pre class="knitr r"><span class="hl std">width</span> <span class="hl kwb">&lt;-</span> <span class="hl num">74.46875</span>
+<div class="chunk" id="unnamed-chunk-9"><div class="rcode"><div class="source"><pre class="knitr r"><span class="hl std">width</span> <span class="hl kwb">&lt;-</span> <span class="hl num">74.46875</span>
 <span class="hl std">height</span> <span class="hl kwb">&lt;-</span> <span class="hl num">13.11719</span>
 </pre></div>
 </div></div>
@@ -946,7 +947,7 @@ glyphFontList(...)
     can be set at drawing time 
     (see the Section on <a href="#details">Further details</a>).
   </p>
-<div class="chunk" id="unnamed-chunk-19"><div class="rcode"><div class="source"><pre class="knitr r"><span class="hl std">col</span> <span class="hl kwb">&lt;-</span> <span class="hl kwd">rep</span><span class="hl std">(</span><span class="hl kwd">c</span><span class="hl std">(rossoCorsa,</span> <span class="hl num">NA</span><span class="hl std">),</span> <span class="hl kwd">c</span><span class="hl std">(</span><span class="hl num">7</span><span class="hl std">,</span> <span class="hl num">5</span><span class="hl std">))</span>
+<div class="chunk" id="unnamed-chunk-10"><div class="rcode"><div class="source"><pre class="knitr r"><span class="hl std">col</span> <span class="hl kwb">&lt;-</span> <span class="hl kwd">rep</span><span class="hl std">(</span><span class="hl kwd">c</span><span class="hl std">(rossoCorsa,</span> <span class="hl num">NA</span><span class="hl std">),</span> <span class="hl kwd">c</span><span class="hl std">(</span><span class="hl num">7</span><span class="hl std">,</span> <span class="hl num">5</span><span class="hl std">))</span>
 </pre></div>
 </div></div>
     <p>
@@ -955,7 +956,7 @@ glyphFontList(...)
     <code>Montserrat</code> fonts, with the glyphs typeset horizontally from 
     left-to-right.
   </p>
-<div class="chunk" id="unnamed-chunk-20"><div class="rcode"><div class="source"><pre class="knitr r"><span class="hl std">glyphs</span> <span class="hl kwb">&lt;-</span> <span class="hl kwd">glyphInfo</span><span class="hl std">(ids, x, y, fonts, size,</span>
+<div class="chunk" id="unnamed-chunk-11"><div class="rcode"><div class="source"><pre class="knitr r"><span class="hl std">glyphs</span> <span class="hl kwb">&lt;-</span> <span class="hl kwd">glyphInfo</span><span class="hl std">(ids, x, y, fonts, size,</span>
                     <span class="hl kwd">glyphFontList</span><span class="hl std">(font1, font2),</span>
                     <span class="hl std">width, height,</span> <span class="hl kwc">col</span><span class="hl std">=col)</span>
 </pre></div>
@@ -981,9 +982,9 @@ grid.glyph(glyphInfo,
     constructed above.  We can now finally see that the glyphs
     that we have typeset spell out "Ferrari Dino".
   </p>
-<div class="chunk" id="unnamed-chunk-21"><div class="rcode"><div class="source"><pre class="knitr r"><span class="hl kwd">grid.glyph</span><span class="hl std">(glyphs)</span>
+<div class="chunk" id="grid.glyph"><div class="rcode"><div class="source"><pre class="knitr r"><span class="hl kwd">grid.glyph</span><span class="hl std">(glyphs)</span>
 </pre></div>
-</div><div class="rimage default"><img src="figure/unnamed-chunk-21-1.png" alt="plot of chunk unnamed-chunk-21" class="plot" /></div></div>
+</div><div class="rimage default"><img src="figure/grid.glyph-1.png" alt="plot of chunk grid.glyph" class="plot" /></div></div>
     <h3>The graphics device interface</h3>
     <p>
     The new user interface for rendering typeset glyphs is mirrored
@@ -1057,10 +1058,10 @@ dev-&gt;glyph(int n, int *glyphs, double *x, double *y,
     For example, the following code typesets the word
     "Ferrari" and the word "Dino" using two 12pt Montserrat fonts.
   </p>
-<div class="chunk" id="unnamed-chunk-22"><div class="rcode"><div class="source"><pre class="knitr r"><span class="hl kwd">library</span><span class="hl std">(textshaping)</span>
+<div class="chunk" id="unnamed-chunk-12"><div class="rcode"><div class="source"><pre class="knitr r"><span class="hl kwd">library</span><span class="hl std">(textshaping)</span>
 </pre></div>
 </div></div>
-<div class="chunk" id="unnamed-chunk-23"><div class="rcode"><div class="source"><pre class="knitr r"><span class="hl kwd">shape_text</span><span class="hl std">(</span><span class="hl kwd">c</span><span class="hl std">(</span><span class="hl str">&quot;Ferrari&quot;</span><span class="hl std">,</span> <span class="hl str">&quot; Dino&quot;</span><span class="hl std">),</span> <span class="hl kwc">id</span><span class="hl std">=</span><span class="hl num">1</span><span class="hl std">,</span>
+<div class="chunk" id="unnamed-chunk-13"><div class="rcode"><div class="source"><pre class="knitr r"><span class="hl kwd">shape_text</span><span class="hl std">(</span><span class="hl kwd">c</span><span class="hl std">(</span><span class="hl str">&quot;Ferrari&quot;</span><span class="hl std">,</span> <span class="hl str">&quot; Dino&quot;</span><span class="hl std">),</span> <span class="hl kwc">id</span><span class="hl std">=</span><span class="hl num">1</span><span class="hl std">,</span>
            <span class="hl kwc">size</span><span class="hl std">=</span><span class="hl num">12</span><span class="hl std">,</span>
            <span class="hl kwc">path</span><span class="hl std">=</span><span class="hl kwd">c</span><span class="hl std">(</span><span class="hl kwd">system.file</span><span class="hl std">(</span><span class="hl str">&quot;fonts&quot;</span><span class="hl std">,</span> <span class="hl str">&quot;Montserrat&quot;</span><span class="hl std">,</span> <span class="hl str">&quot;static&quot;</span><span class="hl std">,</span>
                               <span class="hl str">&quot;Montserrat-BoldItalic.ttf&quot;</span><span class="hl std">,</span> <span class="hl kwc">package</span><span class="hl std">=</span><span class="hl str">&quot;grDevices&quot;</span><span class="hl std">),</span>
@@ -1139,7 +1140,7 @@ dev-&gt;glyph(int n, int *glyphs, double *x, double *y,
     text with the word Ferrari in bold italic racing red and the
     word "Dino" in a plain font.
   </p>
-<div class="chunk" id="unnamed-chunk-24"><div class="rcode"><div class="output"><pre class="knitr r">  \documentclass{standalone}
+<div class="chunk" id="unnamed-chunk-14"><div class="rcode"><div class="output"><pre class="knitr r">  \documentclass{standalone}
   \usepackage{xcolor}
   \begin{document}
   \sffamily\definecolor{rossoCorsa}{RGB}{212,0,0}{\color{rossoCorsa}\bfseries\itshape Ferrari} Dino
@@ -1155,7 +1156,7 @@ dev-&gt;glyph(int n, int *glyphs, double *x, double *y,
     by typesetting the LaTeX code above (using the <code>lualatex</code>
     TeX engine).
   </p>
-<div class="chunk" id="unnamed-chunk-25"><div class="rcode"><div class="output"><pre class="knitr r">  xxx1         k=26
+<div class="chunk" id="unnamed-chunk-15"><div class="rcode"><div class="output"><pre class="knitr r">  xxx1         k=26
                x=color push rgb 0.83138 0 0
   fnt_def_1    fontnum=27, checksum=0, scale=655360, design=655360,
                fontname=[lmsans10-boldoblique]:+tlig;
@@ -1240,9 +1241,9 @@ dev-&gt;glyph(int n, int *glyphs, double *x, double *y,
     For example, the following code draws the typeset glyphs left
     justified relative to the left edge of the current viewport.
   </p>
-<div class="chunk" id="unnamed-chunk-26"><div class="rcode"><div class="source"><pre class="knitr r"><span class="hl kwd">grid.glyph</span><span class="hl std">(glyphs,</span> <span class="hl kwc">x</span><span class="hl std">=</span><span class="hl num">0</span><span class="hl std">,</span> <span class="hl kwc">hjust</span><span class="hl std">=</span><span class="hl str">&quot;left&quot;</span><span class="hl std">)</span>
+<div class="chunk" id="left"><div class="rcode"><div class="source"><pre class="knitr r"><span class="hl kwd">grid.glyph</span><span class="hl std">(glyphs,</span> <span class="hl kwc">x</span><span class="hl std">=</span><span class="hl num">0</span><span class="hl std">,</span> <span class="hl kwc">hjust</span><span class="hl std">=</span><span class="hl str">&quot;left&quot;</span><span class="hl std">)</span>
 </pre></div>
-</div><div class="rimage default"><img src="figure/unnamed-chunk-26-1.png" alt="plot of chunk unnamed-chunk-26" class="plot" /></div></div>
+</div><div class="rimage default"><img src="figure/left-1.png" alt="plot of chunk left" class="plot" /></div></div>
     <p>
     The horizontal justifications <code>"left"</code>,
     <code>"centre"</code>, 
@@ -1309,7 +1310,7 @@ dev-&gt;glyph(int n, int *glyphs, double *x, double *y,
 <div class="chunk" id="centre-align"><div class="rcode"><div class="source"><pre class="knitr r"><span class="hl kwd">grid.glyph</span><span class="hl std">(dinoGlyphs)</span>
 </pre></div>
 </div></div>
-<div class="chunk" id="unnamed-chunk-28"><div class="rimage default"><img src="figure/unnamed-chunk-28-1.png" alt="plot of chunk unnamed-chunk-28" class="plot" /></div></div>
+<div class="chunk" id="centre"><div class="rimage default"><img src="figure/centre-1.png" alt="plot of chunk centre" class="plot" /></div></div>
     <p>
     The <code>hAnchor</code> and <code>vAnchor</code> arguments to 
     <code>glyphInfo()</code> allow additional anchor points to be 
@@ -1321,7 +1322,7 @@ dev-&gt;glyph(int n, int *glyphs, double *x, double *y,
     specifies multiple vertical anchors as represented in the diagram
     above.
   </p>
-<div class="chunk" id="unnamed-chunk-29"><div class="rcode"><div class="source"><pre class="knitr r"><span class="hl std">dinoGlyphs</span> <span class="hl kwb">&lt;-</span>
+<div class="chunk" id="unnamed-chunk-17"><div class="rcode"><div class="source"><pre class="knitr r"><span class="hl std">dinoGlyphs</span> <span class="hl kwb">&lt;-</span>
     <span class="hl kwd">glyphInfo</span><span class="hl std">(...,</span>
               <span class="hl kwc">vAnchor</span><span class="hl std">=</span><span class="hl kwd">glyphAnchor</span><span class="hl std">(</span><span class="hl kwd">c</span><span class="hl std">(fymin, vcentre, fymax,</span>
                                     <span class="hl kwd">min</span><span class="hl std">(ymin),</span> <span class="hl num">0</span><span class="hl std">,</span> <span class="hl kwd">max</span><span class="hl std">(ymax))</span><span class="hl opt">*</span><span class="hl std">scale,</span>
@@ -1341,7 +1342,7 @@ dev-&gt;glyph(int n, int *glyphs, double *x, double *y,
 <div class="chunk" id="bottom-align"><div class="rcode"><div class="source"><pre class="knitr r"><span class="hl kwd">grid.glyph</span><span class="hl std">(dinoGlyphs,</span> <span class="hl kwc">y</span><span class="hl std">=</span><span class="hl num">.5</span><span class="hl std">,</span> <span class="hl kwc">vjust</span><span class="hl std">=</span><span class="hl str">&quot;bottom&quot;</span><span class="hl std">)</span>
 </pre></div>
 </div></div>
-<div class="chunk" id="unnamed-chunk-30"><div class="rimage default"><img src="figure/unnamed-chunk-30-1.png" alt="plot of chunk unnamed-chunk-30" class="plot" /></div></div>
+<div class="chunk" id="bottom"><div class="rimage default"><img src="figure/bottom-1.png" alt="plot of chunk bottom" class="plot" /></div></div>
     <p>
     The following code repeats the render, but this time aligns
     the "baseline" anchor with the centre of the viewport.
@@ -1349,7 +1350,7 @@ dev-&gt;glyph(int n, int *glyphs, double *x, double *y,
 <div class="chunk" id="baseline-align"><div class="rcode"><div class="source"><pre class="knitr r"><span class="hl kwd">grid.glyph</span><span class="hl std">(dinoGlyphs,</span> <span class="hl kwc">y</span><span class="hl std">=</span><span class="hl num">.5</span><span class="hl std">,</span> <span class="hl kwc">vjust</span><span class="hl std">=</span><span class="hl str">&quot;baseline&quot;</span><span class="hl std">)</span>
 </pre></div>
 </div></div>
-<div class="chunk" id="unnamed-chunk-31"><div class="rimage default"><img src="figure/unnamed-chunk-31-1.png" alt="plot of chunk unnamed-chunk-31" class="plot" /></div></div>
+<div class="chunk" id="baseline"><div class="rimage default"><img src="figure/baseline-1.png" alt="plot of chunk baseline" class="plot" /></div></div>
     <p>
     It is also possible to specify horizontal or vertical justification
     as a numeric value.  In this case, 0 corresponds to 
@@ -1362,7 +1363,7 @@ dev-&gt;glyph(int n, int *glyphs, double *x, double *y,
 <div class="chunk" id="zero-align"><div class="rcode"><div class="source"><pre class="knitr r"><span class="hl kwd">grid.glyph</span><span class="hl std">(dinoGlyphs,</span> <span class="hl kwc">y</span><span class="hl std">=</span><span class="hl num">.5</span><span class="hl std">,</span> <span class="hl kwc">vjust</span><span class="hl std">=</span><span class="hl num">0</span><span class="hl std">)</span>
 </pre></div>
 </div></div>
-<div class="chunk" id="unnamed-chunk-32"><div class="rimage default"><img src="figure/unnamed-chunk-32-1.png" alt="plot of chunk unnamed-chunk-32" class="plot" /></div></div>
+<div class="chunk" id="zero"><div class="rimage default"><img src="figure/zero-1.png" alt="plot of chunk zero" class="plot" /></div></div>
     <p>
     However, rather than being limited to a finite set of
     named anchor points,
@@ -1374,7 +1375,7 @@ dev-&gt;glyph(int n, int *glyphs, double *x, double *y,
 <div class="chunk" id="fraction-align"><div class="rcode"><div class="source"><pre class="knitr r"><span class="hl kwd">grid.glyph</span><span class="hl std">(dinoGlyphs,</span> <span class="hl kwc">y</span><span class="hl std">=</span><span class="hl num">.5</span><span class="hl std">,</span> <span class="hl kwc">vjust</span><span class="hl std">=</span><span class="hl num">0.4</span><span class="hl std">)</span>
 </pre></div>
 </div></div>
-<div class="chunk" id="unnamed-chunk-33"><div class="rimage default"><img src="figure/unnamed-chunk-33-1.png" alt="plot of chunk unnamed-chunk-33" class="plot" /></div></div>
+<div class="chunk" id="fraction"><div class="rimage default"><img src="figure/fraction-1.png" alt="plot of chunk fraction" class="plot" /></div></div>
     <p>
     Even greater flexibility is possible because, as well as being able
     to define additional anchors as part of a set of typeset glyphs, we
@@ -1389,7 +1390,7 @@ dev-&gt;glyph(int n, int *glyphs, double *x, double *y,
     specifies multiple heights as represented in the diagram
     above.
   </p>
-<div class="chunk" id="unnamed-chunk-34"><div class="rcode"><div class="source"><pre class="knitr r"><span class="hl std">dinoGlyphs</span> <span class="hl kwb">&lt;-</span>
+<div class="chunk" id="unnamed-chunk-18"><div class="rcode"><div class="source"><pre class="knitr r"><span class="hl std">dinoGlyphs</span> <span class="hl kwb">&lt;-</span>
     <span class="hl kwd">glyphInfo</span><span class="hl std">(...,</span>
               <span class="hl kwc">height</span><span class="hl std">=</span><span class="hl kwd">glyphHeight</span><span class="hl std">(</span><span class="hl kwd">c</span><span class="hl std">(height, inkheight,</span> <span class="hl kwd">max</span><span class="hl std">(ymax))</span><span class="hl opt">*</span><span class="hl std">scale,</span>
                                  <span class="hl kwc">label</span><span class="hl std">=</span><span class="hl kwd">c</span><span class="hl std">(</span><span class="hl str">&quot;height&quot;</span><span class="hl std">,</span> <span class="hl str">&quot;inkheight&quot;</span><span class="hl std">,</span> <span class="hl str">&quot;ascent&quot;</span><span class="hl std">),</span>
@@ -1408,7 +1409,7 @@ dev-&gt;glyph(int n, int *glyphs, double *x, double *y,
 <div class="chunk" id="zero-ascent-align"><div class="rcode"><div class="source"><pre class="knitr r"><span class="hl kwd">grid.glyph</span><span class="hl std">(dinoGlyphs,</span> <span class="hl kwc">y</span><span class="hl std">=</span><span class="hl num">.5</span><span class="hl std">,</span> <span class="hl kwc">vjust</span><span class="hl std">=</span><span class="hl kwd">glyphJust</span><span class="hl std">(</span><span class="hl num">0</span><span class="hl std">,</span> <span class="hl str">&quot;ascent&quot;</span><span class="hl std">))</span>
 </pre></div>
 </div></div>
-<div class="chunk" id="unnamed-chunk-35"><div class="rimage default"><img src="figure/unnamed-chunk-35-1.png" alt="plot of chunk unnamed-chunk-35" class="plot" /></div></div>
+<div class="chunk" id="zero.ascent"><div class="rimage default"><img src="figure/zero.ascent-1.png" alt="plot of chunk zero.ascent" class="plot" /></div></div>
     <p>
     The following code demonstrates that, as well as selecting any value between
     0 and 1, it is also possible to use numeric justifications 
@@ -1419,7 +1420,7 @@ dev-&gt;glyph(int n, int *glyphs, double *x, double *y,
 <div class="chunk" id="one-ascent-align"><div class="rcode"><div class="source"><pre class="knitr r"><span class="hl kwd">grid.glyph</span><span class="hl std">(dinoGlyphs,</span> <span class="hl kwc">y</span><span class="hl std">=</span><span class="hl num">.5</span><span class="hl std">,</span> <span class="hl kwc">vjust</span><span class="hl std">=</span><span class="hl kwd">glyphJust</span><span class="hl std">(</span><span class="hl opt">-</span><span class="hl num">1</span><span class="hl std">,</span> <span class="hl str">&quot;ascent&quot;</span><span class="hl std">))</span>
 </pre></div>
 </div></div>
-<div class="chunk" id="unnamed-chunk-36"><div class="rimage default"><img src="figure/unnamed-chunk-36-1.png" alt="plot of chunk unnamed-chunk-36" class="plot" /></div></div>
+<div class="chunk" id="one.ascent"><div class="rimage default"><img src="figure/one.ascent-1.png" alt="plot of chunk one.ascent" class="plot" /></div></div>
     <h3>Graphical parameters</h3>
     <p>
     Like most 'grid' functions,
@@ -1445,9 +1446,9 @@ dev-&gt;glyph(int n, int *glyphs, double *x, double *y,
     <code>col="grey"</code>, so the last five glyphs are all drawn 
     grey.
   </p>
-<div class="chunk" id="unnamed-chunk-37"><div class="rcode"><div class="source"><pre class="knitr r"><span class="hl kwd">grid.glyph</span><span class="hl std">(glyphs,</span> <span class="hl kwc">gp</span><span class="hl std">=</span><span class="hl kwd">gpar</span><span class="hl std">(</span><span class="hl kwc">col</span><span class="hl std">=</span><span class="hl str">&quot;grey&quot;</span><span class="hl std">))</span>
+<div class="chunk" id="col"><div class="rcode"><div class="source"><pre class="knitr r"><span class="hl kwd">grid.glyph</span><span class="hl std">(glyphs,</span> <span class="hl kwc">gp</span><span class="hl std">=</span><span class="hl kwd">gpar</span><span class="hl std">(</span><span class="hl kwc">col</span><span class="hl std">=</span><span class="hl str">&quot;grey&quot;</span><span class="hl std">))</span>
 </pre></div>
-</div><div class="rimage default"><img src="figure/unnamed-chunk-37-1.png" alt="plot of chunk unnamed-chunk-37" class="plot" /></div></div>
+</div><div class="rimage default"><img src="figure/col-1.png" alt="plot of chunk col" class="plot" /></div></div>
     <h2>
       <a name="discussion">7. Discussion</a>
     </h2>

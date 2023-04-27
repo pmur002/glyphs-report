@@ -92,7 +92,7 @@ options(bitmapType="cairo")
   <rcode id="basic" eval="FALSE">
 plot(mpg ~ disp, mtcars, pch=21, bg=rgb(0,0,0,.3), cex=1.2)
   </rcode>
-  <rcode echo="FALSE" fig.width="5" fig.height="4">
+  <rcode id="basic-plot" echo="FALSE" fig.width="5" fig.height="4">
 par(mex=.7, mar=c(5, 5, 2, 2))
 <<basic>>
   </rcode>
@@ -105,7 +105,7 @@ par(mex=.7, mar=c(5, 5, 2, 2))
 plot(mpg ~ disp, mtcars, pch=21, bg=rgb(0,0,0,.3), cex=1.2,
      xlab="Displacement", ylab="Miles per Gallon")
   </rcode>
-  <rcode echo="FALSE" fig.width="5" fig.height="4">
+  <rcode id="label-plot" echo="FALSE" fig.width="5" fig.height="4">
 par(mex=.7, mar=c(5, 5, 2, 2))
 <<label>>
   </rcode>
@@ -121,7 +121,7 @@ plot(mpg ~ disp, mtcars, pch=21, bg=rgb(0,0,0,.3), cex=1.2,
      xlab="Displacement", ylab="Miles per Gallon",
      font.axis=2, font.lab=2, col.axis="grey", col.lab="grey")
   </rcode>
-  <rcode echo="FALSE" fig.width="5" fig.height="4">
+  <rcode id="par-plot" echo="FALSE" fig.width="5" fig.height="4">
 par(mex=.7, mar=c(5, 5, 2, 2))
 <<par>>
   </rcode>
@@ -147,7 +147,7 @@ points(mtcars$disp[30], mtcars$mpg[30], bg=rossoCorsa, pch=21)
 text(mtcars$disp[30] + 2, mtcars$mpg[30] - 7, rownames(mtcars)[30], 
      col=rossoCorsa, adj=c(0))
   </rcode>
-  <rcode echo="FALSE" fig.width="5" fig.height="4">
+  <rcode id="text-plot" echo="FALSE" fig.width="5" fig.height="4">
 par(mex=.7, mar=c(5, 5, 2, 2))
 <<text>>
   </rcode>
@@ -206,7 +206,7 @@ dev->text(double x, double y, char *str, double rot, double hadj,
     with just the word "Ferrari" in racing red and using a bold-italic font;  
     the word "Dino" is drawn (plain) black.
   </p>
-  <rcode echo="FALSE" fig.width="5" fig.height="4">
+  <rcode id="limitations-plot" echo="FALSE" fig.width="5" fig.height="4">
 par(mex=.7, mar=c(5, 5, 2, 2))
 plot(mpg ~ disp, mtcars, pch=21, bg=rgb(0,0,0,.3), cex=1.2,
      xlab="Displacement", ylab="Miles per Gallon",
@@ -455,7 +455,7 @@ text(mtcars$disp[30] + 2 + strwidth("Ferrari", font=4),
     and then the word Dino in black, with the placement of the
     word Dino based on the width of the word Ferrari.
   </p>
-  <rcode fig.width="1.5" fig.height=".5">
+  <rcode id="diy" fig.width="1.5" fig.height=".5">
 ferrari <- textGrob("Ferrari ", 
                     x=unit(5, "mm"), 
                     just="left", 
@@ -512,7 +512,7 @@ grid.text("Dino",
     and non-left-to-right arrangement of text 
     (the &#x03bc; is drawn above the <code>2</code>).
   </p>
-  <rcode fig.width="1.5" fig.height=".5">
+  <rcode id="plotmath" fig.width="1.5" fig.height=".5">
 grid.text(expression(italic(x) - frac(mu, 2)))
   </rcode>
   <p>
@@ -557,7 +557,7 @@ grid.text(expression(italic(x) - frac(mu, 2)))
     and HTML (and CSS) markup to draw 
     text with the word "Ferrari" in bold-italic red and "Dino" in black.
   </p>
-  <rcode fig.width="1.5" fig.height=".5">
+  <rcode id="ggtext" fig.width="1.5" fig.height=".5">
 library(gridtext)
 richtext <- '<span style="color: #D40000">***Ferrari***</span> Dino'
 grid.draw(richtext_grob(richtext))
@@ -645,7 +645,8 @@ dev.off()
     attempting to draw this text on an X11 (non-Cairo) graphics device.
     Notice that the Hebrew is incorrectly drawn left-to-right.
   </p>
-  <rcode fig.keep="none" results="hide">
+  <!-- Fixed image generated on my machine and then saved; hence eval=FALSE -->
+  <rcode eval="FALSE" fig.keep="none" results="hide">
 png("hebrew-x11.png", type="Xlib", width=100, height=50, res=96)
 grid.text("פרארי דינו")
 dev.off()
@@ -695,7 +696,7 @@ dev.off()
     For example, the following code uses LaTeX markup to draw
     text with the word "Ferrari" in bold-italic red and "Dino" in black. 
   </p>
-  <rcode fig.width="1.5" fig.height=".5">
+  <rcode id="dvir" fig.width="1.5" fig.height=".5">
 library(dvir)
 tex <- 
   "\\sffamily\\definecolor{rossoCorsa}{RGB}{212,0,0}{\\color{rossoCorsa}\\bfseries\\itshape Ferrari} Dino"
@@ -946,7 +947,7 @@ grid.glyph(glyphInfo,
     constructed above.  We can now finally see that the glyphs
     that we have typeset spell out "Ferrari Dino".
   </p>
-  <rcode fig.width="1.5" fig.height=".5">
+  <rcode id="grid.glyph" fig.width="1.5" fig.height=".5">
 grid.glyph(glyphs)
   </rcode>
 
@@ -1165,7 +1166,7 @@ cat(dviOut[first:last], sep="\n")
     For example, the following code draws the typeset glyphs left
     justified relative to the left edge of the current viewport.
   </p>
-  <rcode fig.width="1.5" fig.height=".5">
+  <rcode id="left" fig.width="1.5" fig.height=".5">
 grid.glyph(glyphs, x=0, hjust="left")
   </rcode>
   <p>
@@ -1239,7 +1240,7 @@ setwd(oldwd)
   <rcode id="centre-align" eval="FALSE">
 grid.glyph(dinoGlyphs)
   </rcode>
-  <rcode echo="FALSE" fig.width="1.5" fig.height=".5">
+  <rcode id="centre" echo="FALSE" fig.width="1.5" fig.height=".5">
 grid.segments(0, .5, 1, .5, gp=gpar(col="grey"))
 grid.segments(.5, 0, .5, 1, gp=gpar(col="grey"))
 <<centre-align>>
@@ -1275,7 +1276,7 @@ dinoGlyphs <-
   <rcode id="bottom-align" eval="FALSE">
 grid.glyph(dinoGlyphs, y=.5, vjust="bottom")
   </rcode>
-  <rcode echo="FALSE" fig.width="1.5" fig.height=".5">
+  <rcode id="bottom" echo="FALSE" fig.width="1.5" fig.height=".5">
 grid.segments(0, .5, 1, .5, gp=gpar(col="grey"))
 <<bottom-align>>
   </rcode>
@@ -1286,7 +1287,7 @@ grid.segments(0, .5, 1, .5, gp=gpar(col="grey"))
   <rcode id="baseline-align" eval="FALSE">
 grid.glyph(dinoGlyphs, y=.5, vjust="baseline")
   </rcode>
-  <rcode echo="FALSE" fig.width="1.5" fig.height=".5">
+  <rcode id="baseline" echo="FALSE" fig.width="1.5" fig.height=".5">
 grid.segments(0, .5, 1, .5, gp=gpar(col="grey"))
 <<baseline-align>>
   </rcode>
@@ -1302,7 +1303,7 @@ grid.segments(0, .5, 1, .5, gp=gpar(col="grey"))
   <rcode id="zero-align" eval="FALSE">
 grid.glyph(dinoGlyphs, y=.5, vjust=0)
   </rcode>
-  <rcode echo="FALSE" fig.width="1.5" fig.height=".5">
+  <rcode id="zero" echo="FALSE" fig.width="1.5" fig.height=".5">
 grid.segments(0, .5, 1, .5, gp=gpar(col="grey"))
 <<zero-align>>
   </rcode>
@@ -1317,7 +1318,7 @@ grid.segments(0, .5, 1, .5, gp=gpar(col="grey"))
   <rcode id="fraction-align" eval="FALSE">
 grid.glyph(dinoGlyphs, y=.5, vjust=0.4)
   </rcode>
-  <rcode echo="FALSE" fig.width="1.5" fig.height=".5">
+  <rcode id="fraction" echo="FALSE" fig.width="1.5" fig.height=".5">
 grid.segments(0, .5, 1, .5, gp=gpar(col="grey"))
 <<fraction-align>>
   </rcode>
@@ -1354,7 +1355,7 @@ dinoGlyphs <-
   <rcode id="zero-ascent-align" eval="FALSE">
 grid.glyph(dinoGlyphs, y=.5, vjust=glyphJust(0, "ascent"))
   </rcode>
-  <rcode echo="FALSE" fig.width="1.5" fig.height=".5">
+  <rcode id="zero.ascent" echo="FALSE" fig.width="1.5" fig.height=".5">
 grid.segments(0, .5, 1, .5, gp=gpar(col="grey"))
 <<zero-ascent-align>>
   </rcode>
@@ -1368,7 +1369,7 @@ grid.segments(0, .5, 1, .5, gp=gpar(col="grey"))
   <rcode id="one-ascent-align" eval="FALSE">
 grid.glyph(dinoGlyphs, y=.5, vjust=glyphJust(-1, "ascent"))
   </rcode>
-  <rcode echo="FALSE" fig.width="1.5" fig.height=".5">
+  <rcode id="one.ascent" echo="FALSE" fig.width="1.5" fig.height=".5">
 grid.segments(0, .5, 1, .5, gp=gpar(col="grey"))
 <<one-ascent-align>>
   </rcode>
@@ -1397,7 +1398,7 @@ grid.segments(0, .5, 1, .5, gp=gpar(col="grey"))
     <code>col="grey"</code>, so the last five glyphs are all drawn 
     grey.
   </p>
-  <rcode fig.width="1.5" fig.height=".5">
+  <rcode id="col" fig.width="1.5" fig.height=".5">
 grid.glyph(glyphs, gp=gpar(col="grey"))
   </rcode>
 
