@@ -66,7 +66,8 @@ options(bitmapType="cairo")
     <p>
     This document describes a new feature in the R graphics engine
     to support rendering typeset glyphs.
-    This provides a basis for improved text rendering in R graphics.
+    This provides a basis for developing
+    improved text rendering in R graphics.
   </p>
     <div>
       <h2>Table of Contents:</h2>
@@ -87,10 +88,10 @@ options(bitmapType="cairo")
           <a href="#generating">5. Generating typeset glyphs</a>
         </li>
         <li>
-          <a href="#details">6. Further details</a>
+          <a href="#details">6. Integrating typeset glyphs</a>
         </li>
         <li>
-          <a href="#discussion">7. Discussion</a>
+          <a href="#discussion">7. Summary</a>
         </li>
         <li>
           <a href="#requirements">8. Technical requirements</a>
@@ -109,7 +110,7 @@ options(bitmapType="cairo")
     <p>
     Most statistical plots contain text labels of some sort.
     For example, the plot below contains 
-    axis labels, and tick mark labels.
+    axis labels and tick mark labels.
   </p>
     <rcode id="basic" eval="FALSE"><![CDATA[
 plot(mpg ~ disp, mtcars, pch=21, bg=rgb(0,0,0,.3), cex=1.2)
@@ -133,7 +134,7 @@ par(mex=.7, mar=c(5, 5, 2, 2))
   ]]></rcode>
     <p>
     In addition, R graphics provides several graphical parameters 
-    that control the appearance of the text, such as the font family,
+    that control the appearance of text, such as the font family,
     the font face, the font size, and the colour.
     For example, the following code makes the tick labels and
     the axis labels bold and grey.
@@ -246,7 +247,7 @@ text(mtcars$disp[30] + 2 + strwidth("Ferrari", font=4),
     This simple modification is not (easily) possible with the text-drawing
     interface in R because, in the interfaces shown above, 
     we can only specify a single colour and font face for
-    a block of text.  
+    each character value.
   </p>
     <p>
     In addition to the limitations that the <em>user interface</em> imposes
@@ -265,12 +266,6 @@ text(mtcars$disp[30] + 2 + strwidth("Ferrari", font=4),
     include:
   </p>
     <ul>
-      <li>
-        <p>
-        A block of text can only be drawn with a single 
-        font family, font face, and colour.
-      </p>
-      </li>
       <li>
         <p>
         Font specifications are limited to just a font family plus
@@ -297,7 +292,7 @@ text(mtcars$disp[30] + 2 + strwidth("Ferrari", font=4),
     </ul>
     <p>
     The goal of the changes to the R graphics engine that are
-    described in this document is to support more sophisticated
+    described in this document is to provide a basis for more sophisticated
     text output.  For example, the changes allow us 
     (with the help of <a href="#textshaping">the 'textshaping' package</a>) 
     to layout a 
@@ -329,7 +324,19 @@ text(mtcars$disp[30] + 2 + strwidth("Ferrari", font=4),
     </p>
     <p>
     The next section looks at what needs to happen in order
-    to allow these more sophisticated results to be produced with R.
+    to allow these more sophisticated results to be produced with R
+    and establishes some important terminology.
+    The <a href="#current">Current offerings</a> Section looks in more detail at what is
+    currently possible with R and how close (or how far away) we
+    are from sophisticated text output.
+    The Section on <a href="#glyphInfo">Rendering typeset glyphs</a> introduces
+    the new
+    interface that has been added to the R graphics engine (and
+    some graphics devices) for drawing more sophisticated text.
+    The Section on <a href="#generating">Generating typeset glyphs</a> provides some examples
+    of how the new interface can be built upon
+    and then finally the Section on <a href="#details">Integrating typeset glyphs</a> 
+    describes additional details about the new interface.
   </p>
     <h2>
       <a name="typesetting">2. Sophisticated text support</a>
@@ -345,8 +352,8 @@ text(mtcars$disp[30] + 2 + strwidth("Ferrari", font=4),
         Because the styling can change from word to word or even within a
         word, this typically requires some sort of markup where the
         styling is intermingled with the text, such as 
-        LaTeX (<a href="lamport86latex"/>), 
-        HTML (<a href="HTML"/>) and, 
+        LaTeX (<a href="#lamport86latex">Lamport, 1986</a>), 
+        HTML (<a href="#HTML">WHATWG, 2023</a>) and, 
         to a lesser extent, markdown (<a href="#markdown">Gruber, 2023</a>).
         For example, the following code snippets demonstrate marked up
         text for both LaTeX and HTML/CSS where one word is red and 
@@ -779,8 +786,8 @@ grid.lualatex(tex)
     The obvious solutions are:  allow rich text to pass through to 
     graphics devices and/or allow typeset glyphs to pass through to
     graphics devices.  Allowing rich text requires several issues
-    to be resolved:  what sort of rich text should be allowed and 
-    how will that be passed through?  should there be a single
+    to be resolved:  What sort of rich text should be allowed and 
+    how will that be passed through?  Should there be a single
     rich text format or should we allow multiple formats (with
     possibly large implications for graphics devices)? 
     At this stage, there is no 
@@ -867,7 +874,7 @@ y <- rep(0, 12)
   </p>
     <rcode><![CDATA[
 fonts <- rep(1:2, c(7, 5))
-size <- rep(12, 4)
+size <- rep(12, 12)
   ]]></rcode>
     <p>
     The <code>fontList</code> argument to <code>glyphInfo()</code>
@@ -907,7 +914,7 @@ font2 <- glyphFont(system.file("fonts", "Montserrat", "static",
     glyphs.  These will become more relevant later, as will the 
     <code>hAnchor</code> and <code>vAnchor</code> arguments, which
     can be left missing in simple cases 
-    (see the Section on <a href="#details">Further details</a>).
+    (see the Section on <a href="#details">Integrating typeset glyphs</a>).
     The following width and height provide a bounding box for the
     glyphs in our example.
   </p>
@@ -919,7 +926,9 @@ height <- 13.11719
     Finally, the <code>col</code> argument provides a colour for
     each glyph.  A value of <code>NA</code> means that the colour
     can be set at drawing time 
-    (see the Section on <a href="#details">Further details</a>).
+    (see the Section on <a href="#details">Integrating typeset glyphs</a>).
+    In this case, we specify that the first seven glyphs should
+    be drawn in racing red.
   </p>
     <rcode><![CDATA[
 col <- rep(c(rossoCorsa, NA), c(7, 5))
@@ -951,7 +960,7 @@ grid.glyph(glyphInfo,
     <code>grid::grid.glyph()</code> 
     is the <code>glyphInfo</code>, as produced by the <code>glyphInfo()</code>
     function.  The glyphs will be drawn
-    by default in the centre of the current viewport.
+    by default in the centre of the current 'grid' viewport.
     For example, the following code draws the set of glyphs that we
     constructed above.  We can now finally see that the glyphs
     that we have typeset spell out "Ferrari Dino".
@@ -1102,8 +1111,7 @@ cat(readLines("rich-text.tex"), sep="\n")
     typeset glyph information; which glyphs to draw from which
     fonts and where to draw them.
     For example, the output below shows (part of) the DVI file that is produced
-    by typesetting the LaTeX code above (using the <code>lualatex</code>
-    TeX engine).
+    by typesetting the LaTeX code above (using the LuaTeX engine).
   </p>
     <rcode echo="FALSE" message="FALSE"><![CDATA[
 library(xdvir)
@@ -1151,7 +1159,7 @@ cat(dviOut[first:last], sep="\n")
     specific DVI files.
   </p>
     <h2>
-      <a name="details">6. Further details</a>
+      <a name="details">6. Integrating typeset glyphs</a>
     </h2>
     <p>
     The examples in the Section on <a href="#glyphInfo">Rendering typeset glyphs</a>
@@ -1198,7 +1206,7 @@ grid.glyph(glyphs, x=0, hjust="left")
     The blue rectangles show that each glyph has a width that determines
     where the subsequent glyph will be placed (modulo kerning).
     This leads to a simple idea of "left", the origin of the first 
-    glyph, and "right"x, the location where the next glyph would be 
+    glyph, and "right", the location where the next glyph would be 
     placed after the last glyph, with a "centre" point half way between.
     These provide the basis for the default horizontal justification
     anchor points.
@@ -1276,7 +1284,7 @@ dinoGlyphs <-
     points with an x/y location within a 'grid' 
     viewport.  For example, the following code renders the
     "Dino" glyphs and aligns the "bottom" anchor 
-    with the centre of the current viewport (indicated by a grey 
+    with the vertical centre of the current viewport (indicated by a grey 
     horizontal line).
   </p>
     <rcode id="bottom-align" eval="FALSE"><![CDATA[
@@ -1332,7 +1340,8 @@ grid.segments(0, .5, 1, .5, gp=gpar(col="grey"))
     Even greater flexibility is possible because, as well as being able
     to define additional anchors as part of a set of typeset glyphs, we
     can define additional widths and/or heights.
-    This requires calling the <code>glyphWidth()</code> and/or 
+    This information is supplied to the <code>glyphInfo()</code> call,
+    using the <code>glyphWidth()</code> and/or 
     <code>glyphHeight()</code> function
     and providing width or height values, a label for each width or height, and
     a label that identifies a horizontal anchor for the left of each width
@@ -1408,7 +1417,7 @@ grid.segments(0, .5, 1, .5, gp=gpar(col="grey"))
 grid.glyph(glyphs, gp=gpar(col="grey"))
   ]]></rcode>
     <h2>
-      <a name="discussion">7. Discussion</a>
+      <a name="discussion">7. Summary</a>
     </h2>
     <p>
     This document describes the 
@@ -1500,8 +1509,11 @@ grid.glyph(glyphs, gp=gpar(col="grey"))
     The examples and discussion in this report relate to 
     R version 4.3.0, plus the following packages:
     'dvir' version 0.4-0 (experimental "glyphs" branch);
-    'systemfonts', 'textshaping', and 'ragg';
-    'xdvir' version 0.1-0.
+    'textshaping' version 0.3.6;
+    'ragg' version 1.2.5;
+    'gridtext' version 0.1.5; 
+    and
+    'xdvir' version 0.0-1.
   </p>
     <p>
     This report was generated within a Docker container
@@ -1580,12 +1592,13 @@ grid.glyph(glyphs, gp=gpar(col="grey"))
   </p>
     <h2>How to cite this report</h2>
     <p>
-    Murrell, P., Pedersen, T. L., and Urbanek, S. (2023). "" 
-    Technical Report 2022-??, Department of Statistics, The University of Auckland. 
+    Murrell, P., Pedersen, T. L., and Urbanek, S. (2023). 
+    "Rendering Typeset Glyphs in R Graphics",
+    Technical Report 2023-01, Department of Statistics, The University of Auckland. 
     Version 1.
     [ <a href="how-to-cite.bib">bib</a> |
-      <a href="http://dx.doi.org/">DOI</a> | 
-      <a href="https://stattech.blogs.auckland.ac.nz/">http</a> ]
+      <a href="http://dx.doi.org/10.17608/k6.auckland.22774079">DOI</a> | 
+      <a href="https://stattech.blogs.auckland.ac.nz/2023/05/06/2023-01-rendering-typeset-glyphs-in-r-graphics">http</a> ]
   </p>
     <h2>
       <a name="references">10. References</a>

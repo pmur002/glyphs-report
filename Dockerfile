@@ -44,7 +44,7 @@ RUN apt-get update && apt-get install -y \
     libxml2-utils
 RUN Rscript -e 'library(devtools); install_github("pmur002/dvir", ref="glyphs")'
 RUN apt-get update && apt-get install -y fonttools
-RUN Rscript -e 'library(devtools); install_github("pmur002/xdvir")'
+RUN Rscript -e 'library(devtools); install_github("pmur002/xdvir@v0.0-1")'
 
 RUN apt-get install -y locales && locale-gen en_US.UTF-8
 ENV LANG en_US.UTF-8
